@@ -21,10 +21,24 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, categories, guides, images, ingredients, procedures, tests} from './content';
+import {articles, careGroups, careTopics, categories, guides, images, ingredients, procedures, tests} from './content';
 
-const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Нормальная', 'Чувствительная'];
-const skinProblems = ['Акне', 'Пигментация', 'Сухость', 'Морщины', 'Покраснения', 'Поры'];
+const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
+const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
+
+const careTopicByLabel: Record<string, string> = {
+  'Сухая': 'suhaya-kozha',
+  'Жирная': 'zhirnaya-kozha',
+  'Комбинированная': 'kombinirovannaya-kozha',
+  'Чувствительная': 'chuvstvitelnaya-kozha',
+  'Проблемная': 'problemnaya-kozha',
+  'Акне': 'akne',
+  'Пигментация': 'pigmentaciya',
+  'Морщины': 'morshchiny',
+  'Увлажнение': 'uvlazhnenie',
+  'Восстановление барьера': 'vosstanovlenie-barera',
+  'Расширенные поры': 'rasshirennye-pory',
+};
 
 export function HomePage() {
   const [skinType, setSkinType] = useState('');
@@ -47,7 +61,7 @@ export function HomePage() {
               </div>
             )}
           </div>
-          <div className="search-prompts"><span>Попробуйте:</span><Link to="/ingredients/retinol">Ретинол</Link><Link to="/articles/kak-vybrat-spf">Как выбрать SPF</Link><Link to="/category/skin">Уход за жирной кожей</Link></div>
+          <div className="search-prompts"><span>Попробуйте:</span><Link to="/ingredients/retinol">Ретинол</Link><Link to="/articles/kak-vybrat-spf">Как выбрать SPF</Link><Link to="/category/skin/zhirnaya-kozha">Уход за жирной кожей</Link></div>
         </div>
         <div className="hero-media"><img src={images.hero} alt="Косметические средства и уход за кожей"/><div className="hero-note"><span>Новый гайд</span><strong>Как собрать базовый уход</strong><Link to="/guides/bazovyy-uhod">Читать <ArrowRight size={14}/></Link></div></div>
       </section>
@@ -71,7 +85,7 @@ export function HomePage() {
           <div className="finder-form">
             <div><label>Тип кожи</label><div className="chip-row">{skinTypes.map(x => <button className={skinType===x?'chip active':'chip'} onClick={()=>setSkinType(x)} key={x}>{x}</button>)}</div></div>
             <div><label>Основная задача</label><div className="chip-row">{skinProblems.map(x => <button className={problem===x?'chip active':'chip'} onClick={()=>setProblem(x)} key={x}>{x}</button>)}</div></div>
-            <Link className={`primary-btn ${!skinType || !problem ? 'soft-disabled':''}`} to="/category/skin">Подобрать рекомендации <ArrowRight size={16}/></Link>
+            <Link className={`primary-btn ${!skinType || !problem ? 'soft-disabled':''}`} to={problem ? `/category/skin/${careTopicByLabel[problem]}` : skinType ? `/category/skin/${careTopicByLabel[skinType]}` : '/category/skin'}>Подобрать рекомендации <ArrowRight size={16}/></Link>
           </div>
         </div>
       </section>
@@ -105,23 +119,89 @@ export function HomePage() {
   );
 }
 
+function SkinCategoryPage() {
+  const skinCategory = categories.find((item) => item.slug === 'skin') || categories[0];
+  const groupLinks = [
+    ...careGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#${group.id}` })),
+    { number: '04', title: 'Популярное', text: 'Самые востребованные материалы об активах, увлажнении, SPF и базовой схеме ухода.', href: '#popular' },
+  ];
+  const careArticles = articles.filter((article) => ['Уход', 'Ингредиенты'].includes(article.category));
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:skinCategory.name}]}/>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{skinCategory.name}</h1><p>{skinCategory.description} Выберите направление: тип кожи, конкретную задачу или формат средства. Каждый подраздел ведёт на отдельную страницу с базовой схемой, ингредиентами и связанными материалами.</p></div><img src={skinCategory.image} alt="Уход за кожей"/></div>
+
+    <div className="subcat-grid">{groupLinks.map((item)=><a key={item.title} href={item.href}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><ArrowRight size={17}/></a>)}</div>
+
+    <div className="care-directory">
+      {careGroups.map((group) => {
+        const topics = careTopics.filter((topic) => topic.group === group.id);
+        return <section className="care-group" id={group.id} key={group.id}>
+          <SectionHeading eyebrow="Уход за кожей" title={group.title} text={group.description}/>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/skin/${topic.slug}`} className="care-topic-card" key={topic.slug}><div><span>{topic.group === 'skin-type' ? 'Тип кожи' : topic.group === 'task' ? 'Задача' : 'Средство'}</span><h3>{topic.name}</h3><p>{topic.description}</p></div><ArrowRight size={17}/></Link>)}</div>
+        </section>;
+      })}
+    </div>
+
+    <section id="popular" className="care-popular">
+      <SectionHeading eyebrow="Чаще читают" title="Популярные материалы об уходе" text="Базовые статьи, с которых удобно начать, если пока не хочется собирать сложную рутину." action={<Link className="text-link" to="/articles">Все статьи <ArrowRight size={15}/></Link>}/>
+      <div className="articles-grid">{careArticles.slice(0,6).map((article)=><ArticleCard key={article.slug} article={article}/>)}</div>
+    </section>
+
+    <section className="care-ingredients-callout">
+      <div><p className="eyebrow">Энциклопедия составов</p><h2>Разобраться в ингредиентах</h2><p>Ретинол, ниацинамид, кислоты, керамиды, витамин C и увлажняющие компоненты — отдельные страницы помогают понять роль каждого ингредиента в общей схеме.</p></div>
+      <Link className="secondary-btn" to="/ingredients">Открыть ингредиенты <ArrowRight size={15}/></Link>
+    </section>
+  </main>;
+}
+
 export function CategoryPage() {
   const { slug = 'skin' } = useParams();
+  if (slug === 'skin') return <SkinCategoryPage/>;
+
   const category = categories.find(c=>c.slug===slug) || categories[0];
   const filtered = articles.filter(a => slug === 'hair' ? a.category==='Волосы' : slug==='makeup' ? a.category==='Макияж' : slug==='manicure' ? a.category==='Маникюр' : slug==='cosmetics' ? ['Уход','Ингредиенты'].includes(a.category) : ['Уход','Ингредиенты'].includes(a.category));
   const cards = filtered.length >= 4 ? filtered : articles.slice(0,6);
   return <main className="section-wrap page-block">
     <Breadcrumbs items={[{label:category.name}]}/>
-    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{category.name}</h1><p>{category.description} Здесь собраны материалы для разных уровней: от базовой схемы до подробных разборов ингредиентов и отдельных задач.</p></div><img src={category.image} alt=""/></div>
-    <div className="subcat-grid">{['Тип кожи','Проблемы кожи','Ингредиенты','Этапы ухода'].map((x,i)=><Link key={x} to={i===2?'/ingredients':'/articles'}><span>0{i+1}</span><h3>{x}</h3><p>Подборка материалов и понятных объяснений по теме.</p><ArrowRight size={17}/></Link>)}</div>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{category.name}</h1><p>{category.description} Здесь собраны материалы для разных уровней: от базовой схемы до подробных разборов и отдельных задач.</p></div><img src={category.image} alt=""/></div>
     <div className="content-with-sidebar"><div>
       <SectionHeading title="Популярные статьи"/><div className="articles-grid two-col">{cards.slice(0,4).map(a=><ArticleCard key={a.slug} article={a}/>)}</div>
-      {/*<AdSlot/>*/}
       <SectionHeading title="Новые материалы"/><div className="articles-grid two-col">{articles.slice(2,8).map(a=><ArticleCard key={a.slug} article={a}/>)}</div>
-    </div><aside className="sidebar"><div className="sidebar-box"><h3>Популярное</h3>{articles.slice(0,4).map((a,i)=><Link to={`/articles/${a.slug}`} key={a.slug}><span>0{i+1}</span>{a.title}</Link>)}</div><div className="sidebar-box"><h3>Категории</h3>{categories.slice(0,6).map(c=><Link key={c.slug} to={c.slug==='ingredients'?'/ingredients':`/category/${c.slug}`}>{c.name}<ChevronRight size={14}/></Link>)}</div>
-      {/*<AdSlot tall/>*/}
-    </aside></div>
+    </div><aside className="sidebar"><div className="sidebar-box"><h3>Популярное</h3>{articles.slice(0,4).map((a,i)=><Link to={`/articles/${a.slug}`} key={a.slug}><span>0{i+1}</span>{a.title}</Link>)}</div><div className="sidebar-box"><h3>Категории</h3>{categories.slice(0,6).map(c=><Link key={c.slug} to={c.slug==='ingredients'?'/ingredients':`/category/${c.slug}`}>{c.name}<ChevronRight size={14}/></Link>)}</div></aside></div>
   </main>
+}
+
+export function CareTopicPage() {
+  const { topic = '' } = useParams();
+  const item = careTopics.find((entry) => entry.slug === topic);
+  if (!item) return <NotFoundPage/>;
+
+  const group = careGroups.find((entry) => entry.id === item.group);
+  const relatedArticles = item.articleSlugs.map((slug) => articles.find((article) => article.slug === slug)).filter(Boolean) as typeof articles;
+  const relatedIngredients = item.ingredientSlugs.map((slug) => ingredients.find((ingredient) => ingredient.slug === slug)).filter(Boolean) as typeof ingredients;
+  const relatedTopics = item.relatedSlugs.map((slug) => careTopics.find((entry) => entry.slug === slug)).filter(Boolean) as typeof careTopics;
+
+  return <main className="section-wrap page-block care-topic-page">
+    <Breadcrumbs items={[{label:'Уход за кожей',to:'/category/skin'},{label:group?.title || 'Уход'},{label:item.name}]}/>
+    <div className="care-topic-hero">
+      <div><p className="eyebrow">{group?.title}</p><h1>{item.name}</h1><p>{item.description}</p><div className="care-topic-tags">{item.keywords.slice(0,3).map((keyword)=><span key={keyword}>{keyword}</span>)}</div></div>
+      <div className="care-topic-summary"><span>Коротко</span><p>{item.intro}</p></div>
+    </div>
+
+    <div className="care-topic-columns">
+      <section className="care-advice-card"><span className="care-advice-number">01</span><h2>База ухода</h2><p>Сначала соберите предсказуемую основу. Это упрощает оценку новых средств и помогает не перегружать рутину.</p><ul>{item.basics.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+      <section className="care-advice-card"><span className="care-advice-number">02</span><h2>На что смотреть</h2><p>Эти ориентиры помогут выбирать средства по роли в рутине, а не только по рекламному обещанию.</p><ul>{item.focus.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+    </div>
+
+    {item.slug === 'akne' && <InfoBox title="Когда лучше обратиться к специалисту" tone="warning"><p>Если высыпания выраженные, болезненные, оставляют заметные следы или долго не меняются, косметический уход не стоит рассматривать как замену консультации дерматолога.</p></InfoBox>}
+
+    {relatedIngredients.length > 0 && <section className="care-topic-section"><SectionHeading eyebrow="Составы" title="Ингредиенты по теме" text="Не список обязательных покупок, а ориентир по компонентам, которые часто встречаются в средствах для этой задачи."/><div className="ingredient-grid">{relatedIngredients.map((ingredient)=><IngredientCard key={ingredient.slug} ingredient={ingredient}/>)}</div></section>}
+
+    {relatedArticles.length > 0 && <section className="care-topic-section"><SectionHeading eyebrow="Подробнее" title="Материалы по теме"/><div className="articles-grid">{relatedArticles.map((article)=><ArticleCard key={article.slug} article={article}/>)}</div></section>}
+
+    <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседней задаче или типу ухода, если хотите уточнить схему."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/skin/${related.slug}`} key={related.slug}><span>{careGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
+  </main>;
 }
 
 export function ArticlesPage() {

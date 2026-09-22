@@ -1,7 +1,7 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { articles, ingredients } from './content';
+import { articles, careGroups, careTopics, ingredients } from './content';
 
 export function Logo() {
   return (
@@ -12,11 +12,10 @@ export function Logo() {
   );
 }
 
-const megaGroups = [
-  { title: 'По типу кожи', items: ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'] },
-  { title: 'По задаче', items: ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'] },
-  { title: 'Средства', items: ['Кремы', 'Сыворотки', 'Тоники', 'Маски', 'SPF', 'Очищение'] },
-];
+const megaGroups = careGroups.map((group) => ({
+  title: group.title,
+  items: careTopics.filter((item) => item.group === group.id),
+}));
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,7 +34,7 @@ export function Header() {
                   {megaGroups.map((group) => (
                     <div key={group.title}>
                       <p className="mega-title">{group.title}</p>
-                      {group.items.map((item) => <Link key={item} to="/category/skin">{item}</Link>)}
+                      {group.items.map((item) => <Link key={item.slug} to={`/category/skin/${item.slug}`}>{item.name}</Link>)}
                     </div>
                   ))}
                   <div>
