@@ -1,0 +1,8 @@
+{
+  "title": "BeautyGuide — красота, уход и косметика",
+  "description": "Информационный beauty-портал об уходе, косметике, ингредиентах, процедурах и макияже.",
+  "language": "ru",
+  "robots": { "index": true },
+  "icons": { "icon": "/favicon.svg" },
+  "accessibility": { "addBypassLinks": true }
+}
