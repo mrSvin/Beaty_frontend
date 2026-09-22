@@ -1,3 +1,21 @@
+### Подключение по ssh
+```
+ssh alex@192.168.1.45
+```
+
+### Копирование на сервер
+```
+scp -r ./dist/* alex@192.168.1.45:/var/www/simbeauty/
+```
+
+### Редактирование nginx
+```
+sudo nano /etc/nginx/sites-available/simbeauty.conf
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+
 # BeautyGuide
 
 Информационный beauty-портал на React + Vite, собранный на основе структуры исходного проекта.
