@@ -1,5 +1,5 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { articles, careGroups, careTopics, ingredients } from './content';
 
@@ -21,48 +21,59 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [mobileOpen]);
+
   return (
-    <header className="site-header">
-      <div className="header-inner">
-        <Logo />
-        <nav className="desktop-nav" aria-label="Основная навигация">
-          <div className="mega-wrap" onMouseEnter={() => setMegaOpen(true)} onMouseLeave={() => setMegaOpen(false)}>
-            <NavLink to="/category/skin">Уход <ChevronDown size={14} /></NavLink>
-            {megaOpen && (
-              <div className="mega-menu">
-                <div className="mega-grid">
-                  {megaGroups.map((group) => (
-                    <div key={group.title}>
-                      <p className="mega-title">{group.title}</p>
-                      {group.items.map((item) => <Link key={item.slug} to={`/category/skin/${item.slug}`}>{item.name}</Link>)}
+    <>
+      <header className="site-header">
+        <div className="header-inner">
+          <Logo />
+          <nav className="desktop-nav" aria-label="Основная навигация">
+            <div className="mega-wrap" onMouseEnter={() => setMegaOpen(true)} onMouseLeave={() => setMegaOpen(false)}>
+              <NavLink to="/category/skin">Уход <ChevronDown size={14} /></NavLink>
+              {megaOpen && (
+                <div className="mega-menu">
+                  <div className="mega-grid">
+                    {megaGroups.map((group) => (
+                      <div key={group.title}>
+                        <p className="mega-title">{group.title}</p>
+                        {group.items.map((item) => <Link key={item.slug} to={`/category/skin/${item.slug}`}>{item.name}</Link>)}
+                      </div>
+                    ))}
+                    <div>
+                      <p className="mega-title">Популярное</p>
+                      {articles.slice(0, 3).map((item) => <Link key={item.slug} className="mega-feature" to={`/articles/${item.slug}`}>{item.title}</Link>)}
                     </div>
-                  ))}
-                  <div>
-                    <p className="mega-title">Популярное</p>
-                    {articles.slice(0, 3).map((item) => <Link key={item.slug} className="mega-feature" to={`/articles/${item.slug}`}>{item.title}</Link>)}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <NavLink to="/category/hair">Волосы</NavLink>
+            <NavLink to="/category/makeup">Макияж</NavLink>
+            <NavLink to="/category/manicure">Маникюр</NavLink>
+            <NavLink to="/category/cosmetics">Косметика</NavLink>
+            <NavLink to="/ingredients">Ингредиенты</NavLink>
+            <NavLink to="/procedures">Процедуры</NavLink>
+            <NavLink to="/guides">Гайды</NavLink>
+            <NavLink to="/tests">Тесты</NavLink>
+          </nav>
+          <div className="header-actions">
+            <Link to="/search" className="icon-btn" aria-label="Поиск"><Search size={19} /></Link>
+            <button type="button" className="icon-btn desktop-only" aria-label="Избранное"><Heart size={19} /></button>
+            <button type="button" className="icon-btn mobile-only" onClick={() => setMobileOpen(true)} aria-label="Открыть меню" aria-expanded={mobileOpen}><Menu size={21} /></button>
           </div>
-          <NavLink to="/category/hair">Волосы</NavLink>
-          <NavLink to="/category/makeup">Макияж</NavLink>
-          <NavLink to="/category/manicure">Маникюр</NavLink>
-          <NavLink to="/category/cosmetics">Косметика</NavLink>
-          <NavLink to="/ingredients">Ингредиенты</NavLink>
-          <NavLink to="/procedures">Процедуры</NavLink>
-          <NavLink to="/guides">Гайды</NavLink>
-          <NavLink to="/tests">Тесты</NavLink>
-        </nav>
-        <div className="header-actions">
-          <Link to="/search" className="icon-btn" aria-label="Поиск"><Search size={19} /></Link>
-          <button className="icon-btn desktop-only" aria-label="Избранное"><Heart size={19} /></button>
-          <button className="icon-btn mobile-only" onClick={() => setMobileOpen(true)} aria-label="Открыть меню"><Menu size={21} /></button>
         </div>
-      </div>
+      </header>
       {mobileOpen && (
-        <div className="mobile-drawer">
-          <div className="mobile-drawer-head"><Logo /><button className="icon-btn" onClick={() => setMobileOpen(false)}><X size={22} /></button></div>
+        <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Мобильное меню">
+          <div className="mobile-drawer-head"><Logo /><button type="button" className="icon-btn" onClick={() => setMobileOpen(false)} aria-label="Закрыть меню"><X size={22} /></button></div>
           <Link className="mobile-search" to="/search" onClick={() => setMobileOpen(false)}><Search size={18} /> Что вы хотите узнать?</Link>
           <nav>
             {[['/category/skin','Уход'],['/category/hair','Волосы'],['/category/makeup','Макияж'],['/category/manicure','Маникюр'],['/category/cosmetics','Косметика'],['/ingredients','Ингредиенты'],['/procedures','Процедуры'],['/guides','Гайды'],['/tests','Тесты']].map(([to,label]) => (
@@ -71,7 +82,7 @@ export function Header() {
           </nav>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
