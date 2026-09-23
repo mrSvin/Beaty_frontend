@@ -125,7 +125,7 @@ function SkinCategoryPage() {
     ...careGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#${group.id}` })),
     { number: '04', title: 'Популярное', text: 'Самые востребованные материалы об активах, увлажнении, SPF и базовой схеме ухода.', href: '#popular' },
   ];
-  const careArticles = articles.filter((article) => ['Уход', 'Ингредиенты'].includes(article.category));
+  const careArticles = articles.filter((article) => ['Кожа', 'Ингредиенты'].includes(article.category));
 
   return <main className="section-wrap page-block">
     <Breadcrumbs items={[{label:skinCategory.name}]}/>

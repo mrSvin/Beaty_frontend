@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { articles, careTopics, categories, guides, ingredients, procedures, tests } from '../beauty/content';
 
 const SITE_NAME = 'BeautyGuide';
-export const ORIGIN = (import.meta.env.VITE_SITE_ORIGIN || 'https://beautyguide.ru').replace(/\/+$/, '');
+export const ORIGIN = (import.meta.env.VITE_SITE_ORIGIN || 'https://simbeauty.ru').replace(/\/+$/, '');
 const HOME_DESCRIPTION = 'BeautyGuide — информационный портал об уходе за кожей и волосами, косметике, ингредиентах, макияже, маникюре и beauty-процедурах.';
 
 type SeoData = { title: string; description: string; keywords?: string; robots: string };

@@ -37,7 +37,7 @@ export function Header() {
           <Logo />
           <nav className="desktop-nav" aria-label="Основная навигация">
             <div className="mega-wrap" onMouseEnter={() => setMegaOpen(true)} onMouseLeave={() => setMegaOpen(false)}>
-              <NavLink to="/category/skin">Уход <ChevronDown size={14} /></NavLink>
+              <NavLink to="/category/skin">Кожа <ChevronDown size={14} /></NavLink>
               {megaOpen && (
                 <div className="mega-menu">
                   <div className="mega-grid">
@@ -76,7 +76,7 @@ export function Header() {
           <div className="mobile-drawer-head"><Logo /><button type="button" className="icon-btn" onClick={() => setMobileOpen(false)} aria-label="Закрыть меню"><X size={22} /></button></div>
           <Link className="mobile-search" to="/search" onClick={() => setMobileOpen(false)}><Search size={18} /> Что вы хотите узнать?</Link>
           <nav>
-            {[['/category/skin','Уход'],['/category/hair','Волосы'],['/category/makeup','Макияж'],['/category/manicure','Маникюр'],['/category/cosmetics','Косметика'],['/ingredients','Ингредиенты'],['/procedures','Процедуры'],['/guides','Гайды'],['/tests','Тесты']].map(([to,label]) => (
+            {[['/category/skin','Кожа'],['/category/hair','Волосы'],['/category/makeup','Макияж'],['/category/manicure','Маникюр'],['/category/cosmetics','Косметика'],['/ingredients','Ингредиенты'],['/procedures','Процедуры'],['/guides','Гайды'],['/tests','Тесты']].map(([to,label]) => (
               <Link key={to} to={to} onClick={() => setMobileOpen(false)}>{label}<span>→</span></Link>
             ))}
           </nav>
@@ -101,9 +101,9 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-top">
         <div className="footer-brand"><Logo /><p>Большая взаимосвязанная энциклопедия красоты: уход, косметика, ингредиенты, процедуры и понятные гайды.</p></div>
-        <div><h3>Разделы</h3><Link to="/category/skin">Уход</Link><Link to="/category/hair">Волосы</Link><Link to="/category/makeup">Макияж</Link><Link to="/category/cosmetics">Косметика</Link></div>
+        <div><h3>Разделы</h3><Link to="/category/skin">Кожа</Link><Link to="/category/hair">Волосы</Link><Link to="/category/makeup">Макияж</Link><Link to="/category/cosmetics">Косметика</Link></div>
         <div><h3>Полезное</h3><Link to="/guides">Гайды</Link><Link to="/ingredients">Ингредиенты</Link><Link to="/procedures">Процедуры</Link><Link to="/tests">Тесты</Link></div>
-        <div><h3>О проекте</h3><a href="#about">О нас</a><a href="#editorial">Редакционная политика</a><a href="mailto:hello@beautyguide.ru">Контакты</a></div>
+        <div><h3>О проекте</h3><a href="#about">О нас</a><a href="#editorial">Редакционная политика</a><a href="mailto:hello@simbeauty.ru">Контакты</a></div>
       </div>
       <div className="footer-bottom"><span>© 2026 BeautyGuide</span><span>Политика конфиденциальности · Пользовательское соглашение</span></div>
     </footer>

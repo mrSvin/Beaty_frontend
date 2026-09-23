@@ -72,11 +72,11 @@ export const careTopicImages: Record<string, string> = {
 };
 
 export const articles: Article[] = [
-  { slug: 'retinol-kak-ispolzovat', title: 'Ретинол для лица: как правильно использовать', excerpt: 'Как вводить ретинол в уход, с какой частоты начинать и какие сочетания лучше исключить.', category: 'Уход', image: images.portrait, readTime: '9 мин', date: '18 сентября 2026', tags: ['ретинол', 'активы', 'анти-эйдж'] },
+  { slug: 'retinol-kak-ispolzovat', title: 'Ретинол для лица: как правильно использовать', excerpt: 'Как вводить ретинол в уход, с какой частоты начинать и какие сочетания лучше исключить.', category: 'Кожа', image: images.portrait, readTime: '9 мин', date: '18 сентября 2026', tags: ['ретинол', 'активы', 'анти-эйдж'] },
   { slug: 'komponenty-dlya-uvlazhneniya', title: 'Лучшие компоненты для увлажнения кожи', excerpt: 'Гиалуроновая кислота, глицерин, керамиды и другие компоненты, которые помогают удерживать влагу.', category: 'Ингредиенты', image: images.serum, readTime: '7 мин', date: '16 сентября 2026', tags: ['увлажнение', 'сухость'] },
   { slug: 'chto-takoe-niacinamid', title: 'Что такое ниацинамид и зачем он коже', excerpt: 'Разбираем свойства витамина B3, рабочие концентрации и совместимость с другими активами.', category: 'Ингредиенты', image: images.skincare, readTime: '8 мин', date: '14 сентября 2026', tags: ['ниацинамид', 'барьер'] },
-  { slug: 'kak-vybrat-spf', title: 'Как выбрать SPF для лица на каждый день', excerpt: 'Что означают SPF и UVA-маркировки и как подобрать комфортную текстуру под свой тип кожи.', category: 'Уход', image: images.sunscreen, readTime: '10 мин', date: '12 сентября 2026', tags: ['spf', 'солнцезащита'] },
-  { slug: 'ochishchenie-kozhi', title: 'Очищение кожи без пересушивания: базовая схема', excerpt: 'Когда достаточно одного средства, зачем нужен двойной этап и как понять, что очищение слишком агрессивное.', category: 'Уход', image: images.skincare, readTime: '6 мин', date: '10 сентября 2026', tags: ['очищение', 'барьер'] },
+  { slug: 'kak-vybrat-spf', title: 'Как выбрать SPF для лица на каждый день', excerpt: 'Что означают SPF и UVA-маркировки и как подобрать комфортную текстуру под свой тип кожи.', category: 'Кожа', image: images.sunscreen, readTime: '10 мин', date: '12 сентября 2026', tags: ['spf', 'солнцезащита'] },
+  { slug: 'ochishchenie-kozhi', title: 'Очищение кожи без пересушивания: базовая схема', excerpt: 'Когда достаточно одного средства, зачем нужен двойной этап и как понять, что очищение слишком агрессивное.', category: 'Кожа', image: images.skincare, readTime: '6 мин', date: '10 сентября 2026', tags: ['очищение', 'барьер'] },
   { slug: 'poristost-volos', title: 'Пористость волос: как определить и подобрать уход', excerpt: 'Признаки низкой, средней и высокой пористости и практичная схема ухода без лишних средств.', category: 'Волосы', image: images.hair, readTime: '8 мин', date: '8 сентября 2026', tags: ['волосы', 'пористость'] },
   { slug: 'stoykiy-makiyazh', title: 'Стойкий макияж без эффекта маски', excerpt: 'Подготовка кожи, тонкие слои и фиксация: что действительно влияет на стойкость макияжа.', category: 'Макияж', image: images.makeup, readTime: '7 мин', date: '5 сентября 2026', tags: ['макияж', 'тон'] },
   { slug: 'uhod-za-kutikuloy', title: 'Уход за кутикулой между визитами на маникюр', excerpt: 'Как поддерживать аккуратный вид ногтей дома и какие привычки чаще всего вредят кутикуле.', category: 'Маникюр', image: images.manicure, readTime: '5 мин', date: '2 сентября 2026', tags: ['маникюр', 'ногти'] },
@@ -94,7 +94,7 @@ export const ingredients: Ingredient[] = [
 ];
 
 export const categories = [
-  { slug: 'skin', name: 'Уход за кожей', image: images.portrait, description: 'Базовый и активный уход, типы кожи, проблемы и рабочие схемы.' },
+  { slug: 'skin', name: 'Кожа', image: images.portrait, description: 'Базовый и активный уход, типы кожи, проблемы и рабочие схемы.' },
   { slug: 'hair', name: 'Волосы', image: images.hair, description: 'Уход за кожей головы, длиной, окрашенными и пористыми волосами.' },
   { slug: 'makeup', name: 'Макияж', image: images.makeup, description: 'Техники, продукты, подготовка кожи и понятные разборы макияжа.' },
   { slug: 'manicure', name: 'Маникюр', image: images.manicure, description: 'Уход за ногтями и кутикулой, покрытия и домашние привычки.' },
