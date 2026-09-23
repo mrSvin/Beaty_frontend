@@ -47,6 +47,30 @@ export const images = {
   sunscreen: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1000&q=80',
 };
 
+
+// Обложки для карточек каталога «Уход за кожей».
+// Используются изображения с Pexels и Unsplash, чтобы раздел визуально
+// соответствовал карточкам «Процедуры» и при этом не зависел от локальных ассетов.
+export const careTopicImages: Record<string, string> = {
+  'suhaya-kozha': 'https://images.pexels.com/photos/3762890/pexels-photo-3762890.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'zhirnaya-kozha': 'https://images.pexels.com/photos/8989964/pexels-photo-8989964.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'kombinirovannaya-kozha': 'https://images.pexels.com/photos/7010949/pexels-photo-7010949.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'chuvstvitelnaya-kozha': 'https://images.pexels.com/photos/5927811/pexels-photo-5927811.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'problemnaya-kozha': 'https://images.pexels.com/photos/9475732/pexels-photo-9475732.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'akne': 'https://images.pexels.com/photos/8101530/pexels-photo-8101530.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'pigmentaciya': 'https://images.pexels.com/photos/6417954/pexels-photo-6417954.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'morshchiny': 'https://images.pexels.com/photos/7010890/pexels-photo-7010890.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'uvlazhnenie': 'https://images.pexels.com/photos/29755259/pexels-photo-29755259.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'vosstanovlenie-barera': 'https://images.pexels.com/photos/9475732/pexels-photo-9475732.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'rasshirennye-pory': 'https://images.pexels.com/photos/8989957/pexels-photo-8989957.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'kremy': 'https://images.pexels.com/photos/6560344/pexels-photo-6560344.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'syvorotki': 'https://images.pexels.com/photos/8945936/pexels-photo-8945936.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'toniki': 'https://images.pexels.com/photos/8128060/pexels-photo-8128060.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'maski': 'https://images.pexels.com/photos/7622921/pexels-photo-7622921.jpeg?auto=compress&cs=tinysrgb&w=900',
+  'spf': images.sunscreen,
+  'ochishchenie': 'https://images.pexels.com/photos/6560307/pexels-photo-6560307.jpeg?auto=compress&cs=tinysrgb&w=900',
+};
+
 export const articles: Article[] = [
   { slug: 'retinol-kak-ispolzovat', title: 'Ретинол для лица: как правильно использовать', excerpt: 'Как вводить ретинол в уход, с какой частоты начинать и какие сочетания лучше исключить.', category: 'Уход', image: images.portrait, readTime: '9 мин', date: '18 сентября 2026', tags: ['ретинол', 'активы', 'анти-эйдж'] },
   { slug: 'komponenty-dlya-uvlazhneniya', title: 'Лучшие компоненты для увлажнения кожи', excerpt: 'Гиалуроновая кислота, глицерин, керамиды и другие компоненты, которые помогают удерживать влагу.', category: 'Ингредиенты', image: images.serum, readTime: '7 мин', date: '16 сентября 2026', tags: ['увлажнение', 'сухость'] },

@@ -21,7 +21,7 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopics, categories, guides, images, ingredients, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, images, ingredients, procedures, tests} from './content';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -138,7 +138,10 @@ function SkinCategoryPage() {
         const topics = careTopics.filter((topic) => topic.group === group.id);
         return <section className="care-group" id={group.id} key={group.id}>
           <SectionHeading eyebrow="Уход за кожей" title={group.title} text={group.description}/>
-          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/skin/${topic.slug}`} className="care-topic-card" key={topic.slug}><div><span>{topic.group === 'skin-type' ? 'Тип кожи' : topic.group === 'task' ? 'Задача' : 'Средство'}</span><h3>{topic.name}</h3><p>{topic.description}</p></div><ArrowRight size={17}/></Link>)}</div>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/skin/${topic.slug}`} className="care-topic-card" key={topic.slug}>
+            <div className="care-topic-card-media"><img src={careTopicImages[topic.slug] || images.skincare} alt={`${topic.name} — уход за кожей`} loading="lazy" decoding="async"/></div>
+            <div className="care-topic-card-body"><span>{topic.group === 'skin-type' ? 'Тип кожи' : topic.group === 'task' ? 'Задача' : 'Средство'}</span><h3>{topic.name}</h3><p>{topic.description}</p><b>Подробнее <ArrowRight size={14}/></b></div>
+          </Link>)}</div>
         </section>;
       })}
     </div>
