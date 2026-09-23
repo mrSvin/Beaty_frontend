@@ -21,7 +21,8 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, images, ingredients, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, procedures, tests} from './content';
+import {hairEditorials} from './hairEditorials';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -158,9 +159,43 @@ function SkinCategoryPage() {
   </main>;
 }
 
+function HairCategoryPage() {
+  const hairCategory = categories.find((item) => item.slug === 'hair') || categories[0];
+  const groupLinks = [
+    ...hairGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#hair-${group.id}` })),
+    { number: '04', title: 'С чего начать', text: 'Базовая схема: очищение кожи головы, кондиционер по длине, бережная сушка и защита от высокой температуры.', href: '#hair-start' },
+  ];
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:hairCategory.name}]}/>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{hairCategory.name}</h1><p>{hairCategory.description} Выберите состояние волос, конкретную задачу или тип средства. Каждый материал открывается отдельной страницей с базовой схемой, пошаговым уходом и частыми ошибками.</p></div><img src={hairCategory.image} alt="Уход за волосами"/></div>
+
+    <div className="subcat-grid">{groupLinks.map((item)=><a key={item.title} href={item.href}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><ArrowRight size={17}/></a>)}</div>
+
+    <div className="care-directory">
+      {hairGroups.map((group) => {
+        const topics = hairTopics.filter((topic) => topic.group === group.id);
+        return <section className="care-group" id={`hair-${group.id}`} key={group.id}>
+          <SectionHeading eyebrow="Уход за волосами" title={group.title} text={group.description}/>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/hair/${topic.slug}`} className="care-topic-card" key={topic.slug}>
+            <div className="care-topic-card-media"><img src={hairTopicImages[topic.slug] || images.hair} alt={`${topic.name} — уход за волосами`} loading="lazy" decoding="async"/></div>
+            <div className="care-topic-card-body"><span>{topic.group === 'hair-type' ? 'Тип и состояние' : topic.group === 'task' ? 'Задача' : 'Средство'}</span><h3>{topic.name}</h3><p>{topic.description}</p><b>Подробнее <ArrowRight size={14}/></b></div>
+          </Link>)}</div>
+        </section>;
+      })}
+    </div>
+
+    <section id="hair-start" className="care-ingredients-callout">
+      <div><p className="eyebrow">Базовая схема</p><h2>С чего начать уход за волосами</h2><p>Очищайте кожу головы по мере загрязнения, используйте кондиционер на длину, аккуратно распутывайте волосы и добавляйте термозащиту перед горячей укладкой. Остальные средства имеет смысл выбирать уже под конкретную задачу.</p></div>
+      <Link className="secondary-btn" to="/category/hair/shampuni">Как выбрать шампунь <ArrowRight size={15}/></Link>
+    </section>
+  </main>;
+}
+
 export function CategoryPage() {
   const { slug = 'skin' } = useParams();
   if (slug === 'skin') return <SkinCategoryPage/>;
+  if (slug === 'hair') return <HairCategoryPage/>;
 
   const category = categories.find(c=>c.slug===slug) || categories[0];
   const filtered = articles.filter(a => slug === 'hair' ? a.category==='Волосы' : slug==='makeup' ? a.category==='Макияж' : slug==='manicure' ? a.category==='Маникюр' : slug==='cosmetics' ? ['Уход','Ингредиенты'].includes(a.category) : ['Уход','Ингредиенты'].includes(a.category));
@@ -712,6 +747,71 @@ export function CareTopicPage() {
     {relatedArticles.length > 0 && <section className="care-topic-section"><SectionHeading eyebrow="Подробнее" title="Материалы по теме"/><div className="articles-grid">{relatedArticles.map((article)=><ArticleCard key={article.slug} article={article}/>)}</div></section>}
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседней задаче или типу ухода, если хотите уточнить схему."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/skin/${related.slug}`} key={related.slug}><span>{careGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
+  </main>;
+}
+
+function HairTopicEditorial({ slug }: { slug: string }) {
+  const data = hairEditorials[slug];
+  if (!data) return null;
+
+  return <section className="care-topic-copy article-content hair-topic-copy">
+    <p className="lead">{data.lead}</p>
+
+    <h2>{data.whatTitle}</h2>
+    <p>{data.whatText}</p>
+    <InfoBox title={data.noteTitle}><p>{data.noteText}</p></InfoBox>
+
+    <h2>{data.chooseTitle}</h2>
+    <p>{data.chooseText}</p>
+    <div className="care-ingredient-notes">
+      {data.tips.map(([title, text]) => <div key={title}><strong>{title}</strong><p>{text}</p></div>)}
+    </div>
+
+    <h2>{data.frequencyTitle}</h2>
+    <p>{data.frequencyText}</p>
+
+    <h2>Частые вопросы</h2>
+    <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
+  </section>;
+}
+
+export function HairTopicPage() {
+  const { topic = '' } = useParams();
+  const item = hairTopics.find((entry) => entry.slug === topic);
+  if (!item) return <NotFoundPage/>;
+  const group = hairGroups.find((entry) => entry.id === item.group);
+  const relatedTopics = item.relatedSlugs.map((slug) => hairTopics.find((entry) => entry.slug === slug)).filter(Boolean) as typeof hairTopics;
+  const image = hairTopicImages[item.slug] || images.hair;
+
+  return <main className="section-wrap page-block care-topic-page">
+    <Breadcrumbs items={[{label:'Волосы',to:'/category/hair'},{label:group?.title || 'Уход'},{label:item.name}]}/>
+    <div className="care-topic-feature-hero">
+      <figure><img src={image} alt={`${item.name} — уход за волосами`}/><figcaption>Иллюстрация: Pexels</figcaption></figure>
+      <div><p className="eyebrow">{group?.title}</p><h1>{item.name}</h1><p>{item.description}</p><div className="care-topic-tags">{item.keywords.slice(0,3).map((keyword)=><span key={keyword}>{keyword}</span>)}</div><div className="care-topic-summary"><span>Коротко</span><p>{item.intro}</p></div></div>
+    </div>
+
+    <div className="care-topic-columns">
+      <section className="care-advice-card"><span className="care-advice-number">01</span><h2>База ухода</h2><p>Начните с нескольких понятных привычек, которые легко повторять после каждого мытья.</p><ul>{item.basics.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+      <section className="care-advice-card"><span className="care-advice-number">02</span><h2>На что смотреть</h2><p>Эти ориентиры помогут подобрать текстуры и частоту ухода под поведение ваших волос.</p><ul>{item.focus.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+    </div>
+
+    <section className="article-content care-topic-editorial">
+      <h2>Как выстроить уход пошагово</h2>
+      <p>{item.intro} Необязательно менять всю полку сразу: удобнее корректировать по одному этапу и оценивать, стало ли волосам легче расчёсываться, укладываться и сохранять аккуратный вид.</p>
+      <div className="steps">{item.routine.map((point,index)=><div key={point}><span>{String(index+1).padStart(2,'0')}</span><h3>{index === 0 ? 'Начните с базы' : index === 1 ? 'Добавьте уход' : index === 2 ? 'Защитите длину' : 'Оцените результат'}</h3><p>{point}</p></div>)}</div>
+
+      <h2>Частые ошибки</h2>
+      <p>Большинство проблем в домашнем уходе связано не с отсутствием «идеального» продукта, а с избытком средств, слишком высокой температурой или механическим повреждением длины.</p>
+      <ul className="care-check-list">{item.mistakes.map((point)=><li key={point}>{point};</li>)}</ul>
+
+      <InfoBox title="Полезный ориентир" tone="good"><p>Оценивайте уход по тому, насколько волосы комфортно ощущаются и выглядят после нескольких повторений схемы. Одно применение маски или сыворотки редко показывает, подходит ли система целиком.</p></InfoBox>
+
+      {item.specialist && <><h2>Когда лучше обратиться к специалисту</h2><p>{item.specialist}</p></>}
+    </section>
+
+    <HairTopicEditorial slug={item.slug}/>
+
+    <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить уход или подобрать конкретный формат средства."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/hair/${related.slug}`} key={related.slug}><span>{hairGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
 }
 

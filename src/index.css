@@ -570,3 +570,10 @@ button { cursor: pointer; }
   .care-routine-grid, .care-ingredient-notes { grid-template-columns: 1fr; }
   .care-editorial-image img { height: 280px; }
 }
+
+/* Hair topic editorial pages */
+.care-topic-editorial { max-width: 900px; margin: 46px auto 0; }
+.care-topic-editorial .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.care-topic-editorial .steps > div { min-width: 0; }
+@media (max-width: 980px) { .care-topic-editorial .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .care-topic-editorial { margin-top: 34px; } .care-topic-editorial .steps { grid-template-columns: 1fr; } }
