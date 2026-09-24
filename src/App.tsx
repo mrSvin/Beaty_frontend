@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import SEO from './components/SEO';
 import { Layout } from './beauty/components';
-import { ArticlePage, ArticlesPage, CareTopicPage, CategoryPage, HairTopicPage, GuidePage, GuidesPage, HomePage, IngredientPage, IngredientsPage, NotFoundPage, ProcedurePage, ProceduresPage, SearchPage, TestPage, TestsPage } from './beauty/pages';
+import { ArticlePage, ArticlesPage, CareTopicPage, CategoryPage, HairTopicPage, MakeupTopicPage, GuidePage, GuidesPage, HomePage, IngredientPage, IngredientsPage, NotFoundPage, ProcedurePage, ProceduresPage, SearchPage, TestPage, TestsPage } from './beauty/pages';
 
 export function AppContent() {
   const location = useLocation();
@@ -16,6 +16,7 @@ export function AppContent() {
         <Route path="/articles/:slug" element={<ArticlePage />} />
         <Route path="/category/skin/:topic" element={<CareTopicPage />} />
         <Route path="/category/hair/:topic" element={<HairTopicPage />} />
+        <Route path="/category/makeup/:topic" element={<MakeupTopicPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />
         <Route path="/ingredients/:slug" element={<IngredientPage />} />

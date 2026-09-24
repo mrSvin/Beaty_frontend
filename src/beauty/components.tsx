@@ -1,7 +1,7 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients } from './content';
+import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics } from './content';
 
 export function Logo() {
   return (
@@ -22,10 +22,16 @@ const hairMegaGroups = hairGroups.map((group) => ({
   items: hairTopics.filter((item) => item.group === group.id),
 }));
 
+const makeupMegaGroups = makeupGroups.map((group) => ({
+  title: group.title,
+  items: makeupTopics.filter((item) => item.group === group.id),
+}));
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hairMegaOpen, setHairMegaOpen] = useState(false);
+  const [makeupMegaOpen, setMakeupMegaOpen] = useState(false);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -80,7 +86,25 @@ export function Header() {
                 </div>
               )}
             </div>
-            <NavLink to="/category/makeup">Макияж</NavLink>
+            <div className="mega-wrap" onMouseEnter={() => setMakeupMegaOpen(true)} onMouseLeave={() => setMakeupMegaOpen(false)}>
+              <NavLink to="/category/makeup">Макияж <ChevronDown size={14} /></NavLink>
+              {makeupMegaOpen && (
+                <div className="mega-menu">
+                  <div className="mega-grid">
+                    {makeupMegaGroups.map((group) => (
+                      <div key={group.title}>
+                        <p className="mega-title">{group.title}</p>
+                        {group.items.map((item) => <Link key={item.slug} to={`/category/makeup/${item.slug}`}>{item.name}</Link>)}
+                      </div>
+                    ))}
+                    <div>
+                      <p className="mega-title">С чего начать</p>
+                      {makeupTopics.filter((item) => ['naturalnyy-makiyazh','podgotovka-kozhi','stoykiy-makiyazh'].includes(item.slug)).map((item) => <Link key={item.slug} className="mega-feature" to={`/category/makeup/${item.slug}`}>{item.name}</Link>)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <NavLink to="/category/manicure">Маникюр</NavLink>
             <NavLink to="/category/cosmetics">Косметика</NavLink>
             <NavLink to="/ingredients">Ингредиенты</NavLink>

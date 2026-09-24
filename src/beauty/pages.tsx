@@ -21,8 +21,9 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, makeupGroups, makeupTopicImages, makeupTopics, procedures, tests} from './content';
 import {hairEditorials} from './hairEditorials';
+import {makeupEditorials} from './makeupEditorials';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -192,10 +193,45 @@ function HairCategoryPage() {
   </main>;
 }
 
+
+function MakeupCategoryPage() {
+  const makeupCategory = categories.find((item) => item.slug === 'makeup') || categories[0];
+  const groupLinks = [
+    ...makeupGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#makeup-${group.id}` })),
+    { number: '04', title: 'С чего начать', text: 'Короткая схема: подготовка кожи, точечный тон, один цветовой акцент и фиксация только там, где она нужна.', href: '#makeup-start' },
+  ];
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:makeupCategory.name}]}/>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{makeupCategory.name}</h1><p>{makeupCategory.description} Выберите базу и тон, отдельную зону или готовую технику. Каждый материал открывается отдельной подробной страницей с пошаговой схемой, частыми ошибками и ответами на вопросы.</p></div><img src={makeupCategory.image} alt="Макияж и декоративная косметика"/></div>
+
+    <div className="subcat-grid">{groupLinks.map((item)=><a key={item.title} href={item.href}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><ArrowRight size={17}/></a>)}</div>
+
+    <div className="care-directory">
+      {makeupGroups.map((group) => {
+        const topics = makeupTopics.filter((topic) => topic.group === group.id);
+        return <section className="care-group" id={`makeup-${group.id}`} key={group.id}>
+          <SectionHeading eyebrow="Макияж" title={group.title} text={group.description}/>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/makeup/${topic.slug}`} className="care-topic-card" key={topic.slug}>
+            <div className="care-topic-card-media"><img src={makeupTopicImages[topic.slug] || images.makeup} alt={`${topic.name} — макияж`} loading="lazy" decoding="async"/></div>
+            <div className="care-topic-card-body"><span>{topic.group === 'base' ? 'База и тон' : topic.group === 'zone' ? 'Отдельная зона' : 'Техника'}</span><h3>{topic.name}</h3><p>{topic.description}</p><b>Подробнее <ArrowRight size={14}/></b></div>
+          </Link>)}</div>
+        </section>;
+      })}
+    </div>
+
+    <section id="makeup-start" className="care-ingredients-callout">
+      <div><p className="eyebrow">Быстрый старт</p><h2>С чего начать макияж</h2><p>Подготовьте кожу привычным уходом, нанесите тон или консилер только там, где хотите покрытие, добавьте один цветовой акцент и закрепите зоны, где макияж быстрее двигается. Остальные этапы — по желанию.</p></div>
+      <Link className="secondary-btn" to="/category/makeup/naturalnyy-makiyazh">Естественный макияж <ArrowRight size={15}/></Link>
+    </section>
+  </main>;
+}
+
 export function CategoryPage() {
   const { slug = 'skin' } = useParams();
   if (slug === 'skin') return <SkinCategoryPage/>;
   if (slug === 'hair') return <HairCategoryPage/>;
+  if (slug === 'makeup') return <MakeupCategoryPage/>;
 
   const category = categories.find(c=>c.slug===slug) || categories[0];
   const filtered = articles.filter(a => slug === 'hair' ? a.category==='Волосы' : slug==='makeup' ? a.category==='Макияж' : slug==='manicure' ? a.category==='Маникюр' : slug==='cosmetics' ? ['Уход','Ингредиенты'].includes(a.category) : ['Уход','Ингредиенты'].includes(a.category));
@@ -812,6 +848,70 @@ export function HairTopicPage() {
     <HairTopicEditorial slug={item.slug}/>
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить уход или подобрать конкретный формат средства."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/hair/${related.slug}`} key={related.slug}><span>{hairGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
+  </main>;
+}
+
+
+function MakeupTopicEditorial({ slug }: { slug: string }) {
+  const data = makeupEditorials[slug];
+  if (!data) return null;
+
+  return <section className="care-topic-copy article-content hair-topic-copy">
+    <p className="lead">{data.lead}</p>
+
+    <h2>{data.whatTitle}</h2>
+    <p>{data.whatText}</p>
+    <InfoBox title={data.noteTitle}><p>{data.noteText}</p></InfoBox>
+
+    <h2>{data.chooseTitle}</h2>
+    <p>{data.chooseText}</p>
+    <div className="care-ingredient-notes">
+      {data.tips.map(([title, text]) => <div key={title}><strong>{title}</strong><p>{text}</p></div>)}
+    </div>
+
+    <h2>{data.frequencyTitle}</h2>
+    <p>{data.frequencyText}</p>
+
+    <h2>Частые вопросы</h2>
+    <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
+  </section>;
+}
+
+export function MakeupTopicPage() {
+  const { topic = '' } = useParams();
+  const item = makeupTopics.find((entry) => entry.slug === topic);
+  if (!item) return <NotFoundPage/>;
+  const group = makeupGroups.find((entry) => entry.id === item.group);
+  const relatedTopics = item.relatedSlugs.map((slug) => makeupTopics.find((entry) => entry.slug === slug)).filter(Boolean) as typeof makeupTopics;
+  const image = makeupTopicImages[item.slug] || images.makeup;
+
+  return <main className="section-wrap page-block care-topic-page">
+    <Breadcrumbs items={[{label:'Макияж',to:'/category/makeup'},{label:group?.title || 'Макияж'},{label:item.name}]}/>
+    <div className="care-topic-feature-hero">
+      <figure><img src={image} alt={`${item.name} — руководство по макияжу`}/><figcaption>Иллюстрация: Pexels</figcaption></figure>
+      <div><p className="eyebrow">{group?.title}</p><h1>{item.name}</h1><p>{item.description}</p><div className="care-topic-tags">{item.keywords.slice(0,3).map((keyword)=><span key={keyword}>{keyword}</span>)}</div><div className="care-topic-summary"><span>Коротко</span><p>{item.intro}</p></div></div>
+    </div>
+
+    <div className="care-topic-columns">
+      <section className="care-advice-card"><span className="care-advice-number">01</span><h2>Базовая схема</h2><p>Начните с нескольких понятных действий и добавляйте продукты только под желаемый эффект.</p><ul>{item.basics.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+      <section className="care-advice-card"><span className="care-advice-number">02</span><h2>На что обратить внимание</h2><p>Эти ориентиры помогают подобрать текстуры, инструменты и степень насыщенности.</p><ul>{item.focus.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+    </div>
+
+    <section className="article-content care-topic-editorial">
+      <h2>Как сделать пошагово</h2>
+      <p>{item.intro} Необязательно повторять все этапы: декоративный макияж можно сокращать или менять под задачу, время и желаемый результат.</p>
+      <div className="steps">{item.routine.map((point,index)=><div key={point}><span>{String(index+1).padStart(2,'0')}</span><h3>{index === 0 ? 'Подготовьте' : index === 1 ? 'Нанесите' : index === 2 ? 'Растушуйте' : 'Проверьте результат'}</h3><p>{point}</p></div>)}</div>
+
+      <h2>Частые ошибки</h2>
+      <p>Обычно аккуратнее выглядит макияж, который строится постепенно: небольшими порциями продукта, с промежуточной оценкой и мягкими переходами.</p>
+      <ul className="care-check-list">{item.mistakes.map((point)=><li key={point}>{point};</li>)}</ul>
+
+      <InfoBox title="Полезный ориентир" tone="good"><p>Нет обязательного набора декоративных средств. Если нужный эффект получается двумя-тремя продуктами, добавлять остальные этапы только ради полноты схемы не требуется.</p></InfoBox>
+    </section>
+
+    <MakeupTopicEditorial slug={item.slug}/>
+
+    <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить технику, отдельную зону или способ фиксации."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/makeup/${related.slug}`} key={related.slug}><span>{makeupGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
 }
 
