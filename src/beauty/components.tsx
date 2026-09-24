@@ -1,7 +1,7 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics } from './content';
+import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics, manicureGroups, manicureTopics } from './content';
 
 export function Logo() {
   return (
@@ -27,11 +27,17 @@ const makeupMegaGroups = makeupGroups.map((group) => ({
   items: makeupTopics.filter((item) => item.group === group.id),
 }));
 
+const manicureMegaGroups = manicureGroups.map((group) => ({
+  title: group.title,
+  items: manicureTopics.filter((item) => item.group === group.id),
+}));
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hairMegaOpen, setHairMegaOpen] = useState(false);
   const [makeupMegaOpen, setMakeupMegaOpen] = useState(false);
+  const [manicureMegaOpen, setManicureMegaOpen] = useState(false);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -105,7 +111,25 @@ export function Header() {
                 </div>
               )}
             </div>
-            <NavLink to="/category/manicure">Маникюр</NavLink>
+            <div className="mega-wrap" onMouseEnter={() => setManicureMegaOpen(true)} onMouseLeave={() => setManicureMegaOpen(false)}>
+              <NavLink to="/category/manicure">Маникюр <ChevronDown size={14} /></NavLink>
+              {manicureMegaOpen && (
+                <div className="mega-menu">
+                  <div className="mega-grid">
+                    {manicureMegaGroups.map((group) => (
+                      <div key={group.title}>
+                        <p className="mega-title">{group.title}</p>
+                        {group.items.map((item) => <Link key={item.slug} to={`/category/manicure/${item.slug}`}>{item.name}</Link>)}
+                      </div>
+                    ))}
+                    <div>
+                      <p className="mega-title">С чего начать</p>
+                      {manicureTopics.filter((item) => ['domashniy-manikyur','uhod-za-kutikuloy','forma-nogtey'].includes(item.slug)).map((item) => <Link key={item.slug} className="mega-feature" to={`/category/manicure/${item.slug}`}>{item.name}</Link>)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <NavLink to="/category/cosmetics">Косметика</NavLink>
             <NavLink to="/ingredients">Ингредиенты</NavLink>
             <NavLink to="/procedures">Процедуры</NavLink>
@@ -149,7 +173,7 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-top">
         <div className="footer-brand"><Logo /><p>Большая взаимосвязанная энциклопедия красоты: уход, косметика, ингредиенты, процедуры и понятные гайды.</p></div>
-        <div><h3>Разделы</h3><Link to="/category/skin">Кожа</Link><Link to="/category/hair">Волосы</Link><Link to="/category/makeup">Макияж</Link><Link to="/category/cosmetics">Косметика</Link></div>
+        <div><h3>Разделы</h3><Link to="/category/skin">Кожа</Link><Link to="/category/hair">Волосы</Link><Link to="/category/makeup">Макияж</Link><Link to="/category/manicure">Маникюр</Link><Link to="/category/cosmetics">Косметика</Link></div>
         <div><h3>Полезное</h3><Link to="/guides">Гайды</Link><Link to="/ingredients">Ингредиенты</Link><Link to="/procedures">Процедуры</Link><Link to="/tests">Тесты</Link></div>
         <div><h3>О проекте</h3><a href="#about">О нас</a><a href="#editorial">Редакционная политика</a><a href="mailto:hello@simbeauty.ru">Контакты</a></div>
       </div>

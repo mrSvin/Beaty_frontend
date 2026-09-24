@@ -21,9 +21,10 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, makeupGroups, makeupTopicImages, makeupTopics, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, procedures, tests} from './content';
 import {hairEditorials} from './hairEditorials';
 import {makeupEditorials} from './makeupEditorials';
+import {manicureEditorials} from './manicureEditorials';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -227,11 +228,46 @@ function MakeupCategoryPage() {
   </main>;
 }
 
+
+function ManicureCategoryPage() {
+  const manicureCategory = categories.find((item) => item.slug === 'manicure') || categories[0];
+  const groupLinks = [
+    ...manicureGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#manicure-${group.id}` })),
+    { number: '04', title: 'С чего начать', text: 'Базовая схема: удобная форма, бережная кутикула, чистые инструменты и покрытие только по желанию.', href: '#manicure-start' },
+  ];
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:manicureCategory.name}]}/>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{manicureCategory.name}</h1><p>{manicureCategory.description} Выберите уход и инструменты, тип покрытия или идею формы и дизайна. Каждый материал открывается отдельной подробной страницей с пошаговой схемой, типичными ошибками и частыми вопросами.</p></div><img src={manicureCategory.image} alt="Маникюр и уход за ногтями"/></div>
+
+    <div className="subcat-grid">{groupLinks.map((item)=><a key={item.title} href={item.href}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><ArrowRight size={17}/></a>)}</div>
+
+    <div className="care-directory">
+      {manicureGroups.map((group) => {
+        const topics = manicureTopics.filter((topic) => topic.group === group.id);
+        return <section className="care-group" id={`manicure-${group.id}`} key={group.id}>
+          <SectionHeading eyebrow="Маникюр" title={group.title} text={group.description}/>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/manicure/${topic.slug}`} className="care-topic-card" key={topic.slug}>
+            <div className="care-topic-card-media"><img src={manicureTopicImages[topic.slug] || images.manicure} alt={`${topic.name} — маникюр`} loading="lazy" decoding="async"/></div>
+            <div className="care-topic-card-body"><span>{topic.group === 'care' ? 'Уход' : topic.group === 'covering' ? 'Покрытие' : 'Форма и дизайн'}</span><h3>{topic.name}</h3><p>{topic.description}</p><b>Подробнее <ArrowRight size={14}/></b></div>
+          </Link>)}</div>
+        </section>;
+      })}
+    </div>
+
+    <section id="manicure-start" className="care-ingredients-callout">
+      <div><p className="eyebrow">Быстрый старт</p><h2>С чего начать домашний маникюр</h2><p>Поддерживайте удобную длину и форму, регулярно увлажняйте кожу рук и кутикулу, используйте чистые инструменты и не пытайтесь глубоко срезать кожу или истончать ногтевую пластину. Цветное покрытие — дополнительный, а не обязательный этап.</p></div>
+      <Link className="secondary-btn" to="/category/manicure/domashniy-manikyur">Домашний маникюр пошагово <ArrowRight size={15}/></Link>
+    </section>
+  </main>;
+}
+
 export function CategoryPage() {
   const { slug = 'skin' } = useParams();
   if (slug === 'skin') return <SkinCategoryPage/>;
   if (slug === 'hair') return <HairCategoryPage/>;
   if (slug === 'makeup') return <MakeupCategoryPage/>;
+  if (slug === 'manicure') return <ManicureCategoryPage/>;
 
   const category = categories.find(c=>c.slug===slug) || categories[0];
   const filtered = articles.filter(a => slug === 'hair' ? a.category==='Волосы' : slug==='makeup' ? a.category==='Макияж' : slug==='manicure' ? a.category==='Маникюр' : slug==='cosmetics' ? ['Уход','Ингредиенты'].includes(a.category) : ['Уход','Ингредиенты'].includes(a.category));
@@ -912,6 +948,62 @@ export function MakeupTopicPage() {
     <MakeupTopicEditorial slug={item.slug}/>
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить технику, отдельную зону или способ фиксации."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/makeup/${related.slug}`} key={related.slug}><span>{makeupGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
+  </main>;
+}
+
+
+function ManicureTopicEditorial({ slug }: { slug: string }) {
+  const data = manicureEditorials[slug];
+  if (!data) return null;
+
+  return <section className="care-topic-copy article-content hair-topic-copy">
+    <p className="lead">{data.lead}</p>
+    <h2>{data.whatTitle}</h2>
+    <p>{data.whatText}</p>
+    <InfoBox title={data.noteTitle}><p>{data.noteText}</p></InfoBox>
+    <h2>{data.chooseTitle}</h2>
+    <p>{data.chooseText}</p>
+    <div className="care-ingredient-notes">{data.tips.map(([title, text]) => <div key={title}><strong>{title}</strong><p>{text}</p></div>)}</div>
+    <h2>{data.frequencyTitle}</h2>
+    <p>{data.frequencyText}</p>
+    <h2>Частые вопросы</h2>
+    <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
+  </section>;
+}
+
+export function ManicureTopicPage() {
+  const { topic = '' } = useParams();
+  const item = manicureTopics.find((entry) => entry.slug === topic);
+  if (!item) return <NotFoundPage/>;
+  const group = manicureGroups.find((entry) => entry.id === item.group);
+  const relatedTopics = item.relatedSlugs.map((slug) => manicureTopics.find((entry) => entry.slug === slug)).filter(Boolean) as typeof manicureTopics;
+  const image = manicureTopicImages[item.slug] || images.manicure;
+
+  return <main className="section-wrap page-block care-topic-page">
+    <Breadcrumbs items={[{label:'Маникюр',to:'/category/manicure'},{label:group?.title || 'Маникюр'},{label:item.name}]}/>
+    <div className="care-topic-feature-hero">
+      <figure><img src={image} alt={`${item.name} — руководство по маникюру`}/><figcaption>Иллюстрация: Unsplash</figcaption></figure>
+      <div><p className="eyebrow">{group?.title}</p><h1>{item.name}</h1><p>{item.description}</p><div className="care-topic-tags">{item.keywords.slice(0,3).map((keyword)=><span key={keyword}>{keyword}</span>)}</div><div className="care-topic-summary"><span>Коротко</span><p>{item.intro}</p></div></div>
+    </div>
+
+    <div className="care-topic-columns">
+      <section className="care-advice-card"><span className="care-advice-number">01</span><h2>Базовая схема</h2><p>Начните с нескольких безопасных и повторяемых действий, а дополнительные этапы добавляйте только по необходимости.</p><ul>{item.basics.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+      <section className="care-advice-card"><span className="care-advice-number">02</span><h2>На что обратить внимание</h2><p>Эти ориентиры помогут выбрать инструменты, покрытие или технику без лишнего усложнения.</p><ul>{item.focus.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+    </div>
+
+    <section className="article-content care-topic-editorial">
+      <h2>Как сделать пошагово</h2>
+      <p>{item.intro} Необязательно повторять профессиональную салонную технику дома: аккуратный результат чаще получается, когда каждый этап прост, хорошо контролируется и не требует сильного давления на ноготь или кожу.</p>
+      <div className="steps">{item.routine.map((point,index)=><div key={point}><span>{String(index+1).padStart(2,'0')}</span><h3>{index === 0 ? 'Подготовьте' : index === 1 ? 'Скорректируйте' : index === 2 ? 'Выполните основной этап' : 'Завершите уход'}</h3><p>{point}</p></div>)}</div>
+      <h2>Частые ошибки</h2>
+      <p>В домашнем маникюре чаще всего мешают слишком сильное спиливание, глубокая обработка кожи, толстые слои покрытия и попытки ускорить снятие материала механическим отрыванием.</p>
+      <ul className="care-check-list">{item.mistakes.map((point)=><li key={point}>{point};</li>)}</ul>
+      <InfoBox title="Полезный ориентир" tone="good"><p>Маникюр не должен причинять боль. Если ноготь или кожа воспалены, заметно изменили цвет или форму либо обработка вызывает выраженный дискомфорт, декоративные этапы лучше отложить.</p></InfoBox>
+    </section>
+
+    <ManicureTopicEditorial slug={item.slug}/>
+
+    <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить уход, покрытие или идею дизайна."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/manicure/${related.slug}`} key={related.slug}><span>{manicureGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
 }
 

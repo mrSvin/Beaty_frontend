@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { articles, careTopics, categories, guides, hairTopics, ingredients, makeupTopics, procedures, tests } from '../beauty/content';
+import { articles, careTopics, categories, guides, hairTopics, ingredients, makeupTopics, manicureTopics, procedures, tests } from '../beauty/content';
 
 const SITE_NAME = 'BeautyGuide';
 export const ORIGIN = (import.meta.env.VITE_SITE_ORIGIN || 'https://simbeauty.ru').replace(/\/+$/, '');
@@ -21,6 +21,7 @@ export function getSeoData(pathname: string): SeoData {
   if (path.startsWith('/category/skin/')) { const item=careTopics.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name}: уход, средства и ингредиенты | BeautyGuide`, description: item.description, keywords: item.keywords.join(', '), robots:'index, follow' }; }
   if (path.startsWith('/category/hair/')) { const item=hairTopics.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name}: уход за волосами и практические советы | BeautyGuide`, description: item.description, keywords: item.keywords.join(', '), robots:'index, follow' }; }
   if (path.startsWith('/category/makeup/')) { const item=makeupTopics.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name}: пошаговая техника макияжа | BeautyGuide`, description: item.description, keywords: item.keywords.join(', '), robots:'index, follow' }; }
+  if (path.startsWith('/category/manicure/')) { const item=manicureTopics.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name}: уход, покрытие и техника | BeautyGuide`, description: item.description, keywords: item.keywords.join(', '), robots:'index, follow' }; }
   if (path.startsWith('/category/')) { const item=categories.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name}: статьи и гайды | BeautyGuide`, description: `${item.description} Подборки статей, ингредиентов и практических материалов BeautyGuide.`, robots:'index, follow' }; }
   if (path.startsWith('/articles/')) { const item=articles.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.title} | BeautyGuide`, description: item.excerpt, keywords: item.tags.join(', '), robots:'index, follow' }; }
   if (path.startsWith('/ingredients/')) { const item=ingredients.find(x=>x.slug===path.split('/').pop()); if(item) return { title: `${item.name} в косметике: свойства и совместимость | BeautyGuide`, description: `${item.description} Свойства, кому подходит, как использовать и с чем сочетать.`, keywords: `${item.name}, ${item.latin}, ингредиенты косметики`, robots:'index, follow' }; }
