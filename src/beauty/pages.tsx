@@ -21,10 +21,11 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, ingredients, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, cosmeticsGroups, cosmeticsTopicImages, cosmeticsTopics, procedures, tests} from './content';
 import {hairEditorials} from './hairEditorials';
 import {makeupEditorials} from './makeupEditorials';
 import {manicureEditorials} from './manicureEditorials';
+import {cosmeticsEditorials} from './cosmeticsEditorials';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -262,12 +263,47 @@ function ManicureCategoryPage() {
   </main>;
 }
 
+function CosmeticsCategoryPage() {
+  const cosmeticsCategory = categories.find((item) => item.slug === 'cosmetics') || categories[0];
+  const groupLinks = [
+    ...cosmeticsGroups.map((group, index) => ({ number: `0${index + 1}`, title: group.title, text: group.description, href: `#cosmetics-${group.id}` })),
+    { number: '04', title: 'С чего начать', text: 'Базовая схема: понятная функция каждого продукта, минимум дублей и постепенное знакомство с новыми формулами.', href: '#cosmetics-start' },
+  ];
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:cosmeticsCategory.name}]}/>
+    <div className="category-hero"><div><p className="eyebrow">Раздел</p><h1>{cosmeticsCategory.name}</h1><p>{cosmeticsCategory.description} Здесь собраны разборы уходовых и декоративных продуктов, а также практические материалы о составах, сроках, хранении и выборе средств.</p></div><img src={cosmeticsCategory.image} alt="Косметика и средства ухода"/></div>
+
+    <div className="subcat-grid">{groupLinks.map((item)=><a key={item.title} href={item.href}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><ArrowRight size={17}/></a>)}</div>
+
+    <div className="care-directory">
+      {cosmeticsGroups.map((group) => {
+        const topics = cosmeticsTopics.filter((topic) => topic.group === group.id);
+        return <section className="care-group" id={`cosmetics-${group.id}`} key={group.id}>
+          <SectionHeading eyebrow="Косметика" title={group.title} text={group.description}/>
+          <div className="care-topic-grid">{topics.map((topic)=><Link to={`/category/cosmetics/${topic.slug}`} className="care-topic-card" key={topic.slug}>
+            <div className="care-topic-card-media"><img src={cosmeticsTopicImages[topic.slug] || images.skincare} alt={`${topic.name} — косметика`} loading="lazy" decoding="async"/></div>
+            <div className="care-topic-card-body"><span>{topic.group === 'care' ? 'Уход' : topic.group === 'decorative' ? 'Декоративная косметика' : 'Выбор и хранение'}</span><h3>{topic.name}</h3><p>{topic.description}</p><b>Подробнее <ArrowRight size={14}/></b></div>
+          </Link>)}</div>
+        </section>;
+      })}
+    </div>
+
+    <section id="cosmetics-start" className="care-ingredients-callout">
+      <div><p className="eyebrow">Быстрый старт</p><h2>С чего начать разбираться в косметике</h2><p>Сначала определите функцию средства и задачу, которую оно должно решать. Не дублируйте одинаковые продукты, проверяйте срок после открытия и вводите новые активные формулы по одной — так проще оценить эффект и переносимость.</p></div>
+      <Link className="secondary-btn" to="/category/cosmetics/kak-sobrat-kosmetichku">Собрать базовую косметичку <ArrowRight size={15}/></Link>
+    </section>
+  </main>;
+}
+
+
 export function CategoryPage() {
   const { slug = 'skin' } = useParams();
   if (slug === 'skin') return <SkinCategoryPage/>;
   if (slug === 'hair') return <HairCategoryPage/>;
   if (slug === 'makeup') return <MakeupCategoryPage/>;
   if (slug === 'manicure') return <ManicureCategoryPage/>;
+  if (slug === 'cosmetics') return <CosmeticsCategoryPage/>;
 
   const category = categories.find(c=>c.slug===slug) || categories[0];
   const filtered = articles.filter(a => slug === 'hair' ? a.category==='Волосы' : slug==='makeup' ? a.category==='Макияж' : slug==='manicure' ? a.category==='Маникюр' : slug==='cosmetics' ? ['Уход','Ингредиенты'].includes(a.category) : ['Уход','Ингредиенты'].includes(a.category));
@@ -1004,6 +1040,61 @@ export function ManicureTopicPage() {
     <ManicureTopicEditorial slug={item.slug}/>
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить уход, покрытие или идею дизайна."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/manicure/${related.slug}`} key={related.slug}><span>{manicureGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
+  </main>;
+}
+
+function CosmeticsTopicEditorial({ slug }: { slug: string }) {
+  const data = cosmeticsEditorials[slug];
+  if (!data) return null;
+
+  return <section className="care-topic-copy article-content hair-topic-copy">
+    <p className="lead">{data.lead}</p>
+    <h2>{data.whatTitle}</h2>
+    <p>{data.whatText}</p>
+    <InfoBox title={data.noteTitle}><p>{data.noteText}</p></InfoBox>
+    <h2>{data.chooseTitle}</h2>
+    <p>{data.chooseText}</p>
+    <div className="care-ingredient-notes">{data.tips.map(([title, text]) => <div key={title}><strong>{title}</strong><p>{text}</p></div>)}</div>
+    <h2>{data.frequencyTitle}</h2>
+    <p>{data.frequencyText}</p>
+    <h2>Частые вопросы</h2>
+    <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
+  </section>;
+}
+
+export function CosmeticsTopicPage() {
+  const { topic = '' } = useParams();
+  const item = cosmeticsTopics.find((entry) => entry.slug === topic);
+  if (!item) return <NotFoundPage/>;
+  const group = cosmeticsGroups.find((entry) => entry.id === item.group);
+  const relatedTopics = item.relatedSlugs.map((slug) => cosmeticsTopics.find((entry) => entry.slug === slug)).filter(Boolean) as typeof cosmeticsTopics;
+  const image = cosmeticsTopicImages[item.slug] || images.skincare;
+
+  return <main className="section-wrap page-block care-topic-page">
+    <Breadcrumbs items={[{label:'Косметика',to:'/category/cosmetics'},{label:group?.title || 'Косметика'},{label:item.name}]}/>
+    <div className="care-topic-feature-hero">
+      <figure><img src={image} alt={`${item.name} — руководство по выбору косметики`}/><figcaption>Иллюстрация: Pexels / Unsplash</figcaption></figure>
+      <div><p className="eyebrow">{group?.title}</p><h1>{item.name}</h1><p>{item.description}</p><div className="care-topic-tags">{item.keywords.slice(0,3).map((keyword)=><span key={keyword}>{keyword}</span>)}</div><div className="care-topic-summary"><span>Коротко</span><p>{item.intro}</p></div></div>
+    </div>
+
+    <div className="care-topic-columns">
+      <section className="care-advice-card"><span className="care-advice-number">01</span><h2>Базовые ориентиры</h2><p>Начните с функции продукта, вашей текущей рутины и удобства регулярного использования.</p><ul>{item.basics.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+      <section className="care-advice-card"><span className="care-advice-number">02</span><h2>На что смотреть при выборе</h2><p>Эти параметры помогают сравнивать продукты по задаче, а не только по обещаниям на упаковке.</p><ul>{item.focus.map((point)=><li key={point}><Check size={16}/><span>{point}</span></li>)}</ul></section>
+    </div>
+
+    <section className="article-content care-topic-editorial">
+      <h2>Как использовать или выбирать пошагово</h2>
+      <p>{item.intro} Необязательно собирать сложную многоступенчатую схему: понятная роль каждого средства и аккуратное введение новинок обычно полезнее большого количества банок.</p>
+      <div className="steps">{item.routine.map((point,index)=><div key={point}><span>{String(index+1).padStart(2,'0')}</span><h3>{index === 0 ? 'Определите задачу' : index === 1 ? 'Сравните варианты' : index === 2 ? 'Проверьте на практике' : 'Оцените результат'}</h3><p>{point}</p></div>)}</div>
+      <h2>Частые ошибки</h2>
+      <p>В выборе косметики чаще всего мешают дублирование функций, покупка только по рекламному обещанию и одновременная смена большого количества средств.</p>
+      <ul className="care-check-list">{item.mistakes.map((point)=><li key={point}>{point};</li>)}</ul>
+      <InfoBox title="Полезный ориентир" tone="good"><p>При выраженном жжении, отёке, стойком покраснении или другой сильной реакции новый продукт лучше прекратить использовать. Косметика не должна использоваться через заметный дискомфорт ради обещанного эффекта.</p></InfoBox>
+    </section>
+
+    <CosmeticsTopicEditorial slug={item.slug}/>
+
+    <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите подробнее разобраться в составе, формате или правилах выбора."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/cosmetics/${related.slug}`} key={related.slug}><span>{cosmeticsGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
 }
 

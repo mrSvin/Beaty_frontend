@@ -1,7 +1,7 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics, manicureGroups, manicureTopics } from './content';
+import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics, manicureGroups, manicureTopics, cosmeticsGroups, cosmeticsTopics } from './content';
 
 export function Logo() {
   return (
@@ -32,12 +32,18 @@ const manicureMegaGroups = manicureGroups.map((group) => ({
   items: manicureTopics.filter((item) => item.group === group.id),
 }));
 
+const cosmeticsMegaGroups = cosmeticsGroups.map((group) => ({
+  title: group.title,
+  items: cosmeticsTopics.filter((item) => item.group === group.id),
+}));
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [hairMegaOpen, setHairMegaOpen] = useState(false);
   const [makeupMegaOpen, setMakeupMegaOpen] = useState(false);
   const [manicureMegaOpen, setManicureMegaOpen] = useState(false);
+  const [cosmeticsMegaOpen, setCosmeticsMegaOpen] = useState(false);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -130,7 +136,25 @@ export function Header() {
                 </div>
               )}
             </div>
-            <NavLink to="/category/cosmetics">Косметика</NavLink>
+            <div className="mega-wrap" onMouseEnter={() => setCosmeticsMegaOpen(true)} onMouseLeave={() => setCosmeticsMegaOpen(false)}>
+              <NavLink to="/category/cosmetics">Косметика <ChevronDown size={14} /></NavLink>
+              {cosmeticsMegaOpen && (
+                <div className="mega-menu">
+                  <div className="mega-grid">
+                    {cosmeticsMegaGroups.map((group) => (
+                      <div key={group.title}>
+                        <p className="mega-title">{group.title}</p>
+                        {group.items.map((item) => <Link key={item.slug} to={`/category/cosmetics/${item.slug}`}>{item.name}</Link>)}
+                      </div>
+                    ))}
+                    <div>
+                      <p className="mega-title">С чего начать</p>
+                      {cosmeticsTopics.filter((item) => ['kak-sobrat-kosmetichku','kak-chitat-sostav','srok-godnosti-kosmetiki'].includes(item.slug)).map((item) => <Link key={item.slug} className="mega-feature" to={`/category/cosmetics/${item.slug}`}>{item.name}</Link>)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <NavLink to="/ingredients">Ингредиенты</NavLink>
             <NavLink to="/procedures">Процедуры</NavLink>
             <NavLink to="/guides">Гайды</NavLink>
