@@ -320,12 +320,12 @@ export function CategoryPage() {
 
 const careTopicMedia: Record<string, { image: string; alt: string; source: string }> = {
   'suhaya-kozha': {
-    image: 'https://images.pexels.com/photos/3762890/pexels-photo-3762890.jpeg?auto=compress&cs=tinysrgb&w=1400',
+    image: '/images/pexels-3762890.webp',
     alt: 'Девушка наносит увлажняющий крем на лицо',
     source: 'https://www.pexels.com/photo/woman-applying-moisturizer-on-her-face-3762890/',
   },
   'zhirnaya-kozha': {
-    image: 'https://images.pexels.com/photos/8989964/pexels-photo-8989964.jpeg?auto=compress&cs=tinysrgb&w=1400',
+    image: '/images/pexels-8989964.webp',
     alt: 'Девушка наносит средство для ухода за кожей лица',
     source: 'https://www.pexels.com/photo/a-woman-applying-a-facial-product-8989964/',
   },

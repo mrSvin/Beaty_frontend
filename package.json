@@ -4,18 +4,20 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && vite build --ssr src/prerender.tsx --outDir .prerender && node scripts/prerender.mjs && node scripts/check-seo.mjs",
+    "dev": "node scripts/localize-images.mjs && vite",
+    "build": "node scripts/localize-images.mjs && vite build && vite build --ssr src/prerender.tsx --outDir .prerender && node scripts/prerender.mjs && node scripts/check-seo.mjs",
     "preview": "vite preview",
     "format": "oxfmt",
-    "check:seo": "node scripts/check-seo.mjs"
+    "check:seo": "node scripts/check-seo.mjs",
+    "images:localize": "node scripts/localize-images.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.47.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
-    "react-router-dom": "^7.18.3"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
