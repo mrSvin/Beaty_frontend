@@ -10,7 +10,7 @@ const concurrency = 8
 const retries = 3
 
 const MAX_DIMENSION = 1000
-const WEBP_QUALITY = 50
+const WEBP_QUALITY = 70
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
 await mkdir(outputDir, { recursive: true })
@@ -86,7 +86,7 @@ async function processImage(inputPath, outputPath) {
   }
 
   await pipeline
-      .webp({ quality: WEBP_QUALITY, effort: 4 })
+      .webp({ quality: WEBP_QUALITY, effort: 6 })
       .toFile(outputPath)
 }
 
