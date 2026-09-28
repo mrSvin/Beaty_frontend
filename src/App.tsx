@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import SEO from './components/SEO';
+import YandexMetrika from './components/YandexMetrika';
 import { Layout } from './beauty/components';
 import { ArticlePage, ArticlesPage, CareTopicPage, CategoryPage, HairTopicPage, MakeupTopicPage, ManicureTopicPage, CosmeticsTopicPage, GuidePage, GuidesPage, HomePage, IngredientPage, IngredientsPage, NotFoundPage, ProcedurePage, ProceduresPage, SearchPage, TestPage, TestsPage } from './beauty/pages';
 
@@ -9,6 +10,7 @@ export function AppContent() {
   useEffect(() => { if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); }, [location.pathname]);
   return <>
     <SEO />
+    <YandexMetrika />
     <Layout>
       <Routes>
         <Route path="/" element={<HomePage />} />
