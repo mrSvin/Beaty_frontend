@@ -1,7 +1,8 @@
 import { ChevronDown, Clock3, Heart, Menu, Search, Sparkles, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { articles, careGroups, careTopics, hairGroups, hairTopics, ingredients, makeupGroups, makeupTopics, manicureGroups, manicureTopics, cosmeticsGroups, cosmeticsTopics } from './content';
+import { articles, careGroups, careTopics, hairGroups, hairTopics, makeupGroups, makeupTopics, manicureGroups, manicureTopics, cosmeticsGroups, cosmeticsTopics } from './content';
+import {ingredients} from "@/beauty/contentIngredient";
 
 export function Logo() {
   return (

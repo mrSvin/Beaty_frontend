@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { articles, careTopics, categories, guides, hairTopics, ingredients, makeupTopics, manicureTopics, cosmeticsTopics, procedures, tests } from '../beauty/content';
+import { articles, careTopics, categories, guides, hairTopics, makeupTopics, manicureTopics, cosmeticsTopics, procedures, tests } from '../beauty/content';
+import {ingredients} from "@/beauty/contentIngredient";
 
 const SITE_NAME = 'BeautyGuide';
 export const ORIGIN = (import.meta.env.VITE_SITE_ORIGIN || 'https://simbeauty.ru').replace(/\/+$/, '');
