@@ -1,4 +1,5 @@
 import {ingredients} from "@/beauty/contentIngredient";
+import {tests} from "@/beauty/contentTests";
 
 export type Article = {
   slug: string;
@@ -10,7 +11,6 @@ export type Article = {
   date: string;
   tags: string[];
 };
-
 
 export type CareTopicGroup = 'skin-type' | 'task' | 'product';
 
@@ -967,14 +967,7 @@ export const procedures = [
   { slug: 'facial-massage', title: 'Массаж лица', type: 'Домашний уход', image: images.hero, excerpt: 'Ручные техники, ограничения и реалистичные ожидания от регулярного массажа.' },
 ];
 
-export const tests = [
-  { slug: 'skin-type', title: 'Определить тип кожи', description: '8 вопросов о том, как кожа ведёт себя после умывания и в течение дня.' },
-  { slug: 'routine-builder', title: 'Построить схему ухода', description: 'Подберите базовые этапы по типу кожи и основной задаче.' },
-  { slug: 'ingredient-compatibility', title: 'Проверить совместимость ингредиентов', description: 'Быстрый ориентир по популярным комбинациям активов.' },
-  { slug: 'hair-porosity', title: 'Определить пористость волос', description: 'Поймите, как волосы удерживают влагу и какие текстуры им подходят.' },
-  { slug: 'cosmetics-usage', title: 'Калькулятор расхода косметики', description: 'Оцените, на сколько примерно хватит средства при регулярном использовании.' },
-  { slug: 'care-fit', title: 'Тест: какой уход вам подходит', description: 'Соберите персональный ориентир из нескольких простых ответов.' },
-];
+
 
 
 export const cosmeticsGroups: { id: CosmeticsTopicGroup; title: string; description: string }[] = [

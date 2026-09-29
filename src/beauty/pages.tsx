@@ -21,12 +21,13 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, cosmeticsGroups, cosmeticsTopicImages, cosmeticsTopics, procedures, tests} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, cosmeticsGroups, cosmeticsTopicImages, cosmeticsTopics, procedures} from './content';
 import {hairEditorials} from './hairEditorials';
 import {makeupEditorials} from './makeupEditorials';
 import {manicureEditorials} from './manicureEditorials';
 import {cosmeticsEditorials} from './cosmeticsEditorials';
 import {ingredients} from "@/beauty/contentIngredient";
+import {tests} from "@/beauty/contentTests";
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
