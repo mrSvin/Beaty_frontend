@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {
   ArrowRight,
   Check,
@@ -1160,8 +1160,48 @@ export function GuidePage(){const {slug}=useParams();const g=guides.find(x=>x.sl
 
 export function TestsPage(){return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Тесты'}]}/><div className="page-intro"><p className="eyebrow">Интерактив</p><h1>Beauty-тесты и инструменты</h1><p>Небольшие интерактивные помощники, которые дают ориентир и ведут к подробным материалам по теме.</p></div><div className="tests-grid">{tests.map((t,i)=><Link to={`/tests/${t.slug}`} key={t.slug}><span className="test-icon">{i%2?<FlaskConical/>:<Sparkles/>}</span><h3>{t.title}</h3><p>{t.description}</p><b>Начать <ArrowRight size={14}/></b></Link>)}</div></main>}
 
-export function TestPage(){const {slug}=useParams();const t=tests.find(x=>x.slug===slug)||tests[0];const [step,setStep]=useState(0);const [answer,setAnswer]=useState('');const questions=[{q:'Как чувствует себя кожа после умывания?',a:['Комфортно','Появляется сухость','Быстро появляется жирный блеск','Разные зоны ведут себя по-разному']},{q:'Что происходит с кожей к середине дня?',a:['Почти не меняется','Становится сухой','Блестит почти всё лицо','Блестит в основном T-зона']},{q:'Как кожа реагирует на плотные кремы?',a:['Комфортно','Впитывает очень быстро','Часто кажутся тяжёлыми','Зависит от зоны лица']}];if(step>=questions.length)return <main className="section-wrap test-page"><Breadcrumbs items={[{label:'Тесты',to:'/tests'},{label:t.title}]}/><div className="test-result"><div className="result-icon"><Star/></div><p className="eyebrow">Результат</p><h1>Ваш ориентир — комбинированная кожа</h1><p>Разные зоны могут вести себя по-разному: T-зона чаще становится жирнее, а щёки остаются нормальными или склонными к сухости.</p><div className="result-care"><h2>С чего начать</h2><ul><li>мягкое очищение без ощущения стянутости;</li><li>лёгкое увлажнение на всё лицо;</li><li>активы добавлять под конкретную задачу;</li><li>ежедневная фотозащита по условиям дня.</li></ul></div><Link className="primary-btn" to="/category/skin">Материалы для комбинированной кожи <ArrowRight size={16}/></Link></div></main>;
-const q=questions[step];return <main className="section-wrap test-page"><Breadcrumbs items={[{label:'Тесты',to:'/tests'},{label:t.title}]}/><div className="test-card"><div className="test-progress"><span>{step+1} / {questions.length}</span><div><i style={{width:`${((step+1)/questions.length)*100}%`}}></i></div></div><p className="eyebrow">{t.title}</p><h1>{q.q}</h1><div className="answer-list">{q.a.map(a=><button onClick={()=>setAnswer(a)} className={answer===a?'active':''} key={a}><span>{answer===a?<Check size={16}/>:''}</span>{a}</button>)}</div><button className="primary-btn" disabled={!answer} onClick={()=>{setStep(s=>s+1);setAnswer('')}}>Продолжить <ArrowRight size={16}/></button></div></main>}
+export function TestPage(){
+  const {slug}=useParams();
+  const t=tests.find(x=>x.slug===slug)||tests[0];
+  const [step,setStep]=useState(0);
+  const [answer,setAnswer]=useState('');
+  const [answers,setAnswers]=useState<Record<string,string>>({});
+
+  useEffect(()=>{
+    setStep(0);
+    setAnswer('');
+    setAnswers({});
+  },[slug]);
+
+  if(step>=t.questions.length){
+    const result=t.getResult(answers);
+    return <main className="section-wrap test-page">
+      <Breadcrumbs items={[{label:'Тесты',to:'/tests'},{label:t.title}]}/>
+      <div className="test-result">
+        <div className="result-icon"><Star/></div>
+        <p className="eyebrow">Персональный результат</p>
+        <h1>{result.title}</h1>
+        <p>{result.description}</p>
+        <div className="result-care"><h2>С чего начать</h2><ul>{result.tips.map(item=><li key={item}>{item}</li>)}</ul></div>
+        {result.note&&<p className="test-result-note">{result.note}</p>}
+        <Link className="primary-btn" to={result.link}>{result.linkLabel} <ArrowRight size={16}/></Link>
+        <button className="text-link test-restart" type="button" onClick={()=>{setStep(0);setAnswer('');setAnswers({})}}>Пройти тест ещё раз</button>
+      </div>
+    </main>;
+  }
+
+  const q=t.questions[step];
+  return <main className="section-wrap test-page">
+    <Breadcrumbs items={[{label:'Тесты',to:'/tests'},{label:t.title}]}/>
+    <div className="test-card">
+      <div className="test-progress"><span>{step+1} / {t.questions.length}</span><div><i style={{width:`${((step+1)/t.questions.length)*100}%`}}></i></div></div>
+      <p className="eyebrow">{t.title}</p>
+      <h1>{q.question}</h1>
+      <div className="answer-list">{q.answers.map(a=><button type="button" onClick={()=>setAnswer(a.value)} className={answer===a.value?'active':''} key={a.value}><span>{answer===a.value?<Check size={16}/>:''}</span>{a.label}</button>)}</div>
+      <button className="primary-btn" disabled={!answer} onClick={()=>{setAnswers(current=>({...current,[q.id]:answer}));setStep(current=>current+1);setAnswer('')}}>Продолжить <ArrowRight size={16}/></button>
+    </div>
+  </main>
+}
 
 export function SearchPage(){const [params]=useSearchParams();const [q,setQ]=useState(params.get('q')||'');const lower=q.toLowerCase();const resultArticles=useMemo(()=>articles.filter(a=>!q||`${a.title} ${a.excerpt}`.toLowerCase().includes(lower)),[q,lower]);const resultIng=useMemo(()=>ingredients.filter(i=>!q||`${i.name} ${i.description}`.toLowerCase().includes(lower)),[q,lower]);return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Поиск'}]}/><div className="page-intro"><p className="eyebrow">Поиск по BeautyGuide</p><h1>Что вы хотите узнать?</h1></div><SearchField value={q} onChange={setQ} placeholder="Например, ретинол"/><div className="search-results"><section><div className="search-section-title"><h2>Статьи</h2><span>{resultArticles.length}</span></div>{resultArticles.slice(0,5).map(a=><Link to={`/articles/${a.slug}`} key={a.slug}><span>{a.category}</span><div><h3>{a.title}</h3><p>{a.excerpt}</p></div><ArrowRight/></Link>)}</section><section><div className="search-section-title"><h2>Ингредиенты</h2><span>{resultIng.length}</span></div>{resultIng.slice(0,5).map(i=><Link to={`/ingredients/${i.slug}`} key={i.slug}><span>Ингредиент</span><div><h3>{i.name}</h3><p>{i.description}</p></div><ArrowRight/></Link>)}</section></div></main>}
 
