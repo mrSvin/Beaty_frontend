@@ -21,7 +21,9 @@ import {
   SearchField,
   SectionHeading
 } from './components';
-import {articles, careGroups, careTopicImages, careTopics, categories, guides, hairGroups, hairTopicImages, hairTopics, images, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, cosmeticsGroups, cosmeticsTopicImages, cosmeticsTopics, procedures} from './content';
+import {articles, careGroups, careTopicImages, careTopics, categories, hairGroups, hairTopicImages, hairTopics, images, makeupGroups, makeupTopicImages, makeupTopics, manicureGroups, manicureTopicImages, manicureTopics, cosmeticsGroups, cosmeticsTopicImages, cosmeticsTopics} from './content';
+import {guides} from './contentGuides';
+import {procedures} from './contentProcedures';
 import {hairEditorials} from './hairEditorials';
 import {makeupEditorials} from './makeupEditorials';
 import {manicureEditorials} from './manicureEditorials';
@@ -1284,17 +1286,156 @@ export function IngredientPage(){const {slug}=useParams();const item=ingredients
   {/*<AdSlot/>*/}
   <h2 id="i4">Какая концентрация нужна</h2><p>Рабочая концентрация зависит от конкретного компонента и продукта. Более высокая цифра не означает автоматически более выраженный или более безопасный результат.</p><h2 id="i5">Как использовать</h2><p>Добавляйте средство постепенно и соблюдайте инструкцию производителя. При использовании активов, повышающих чувствительность к солнцу, уделяйте особое внимание фотозащите.</p><h2 id="i6">Совместимость ингредиентов</h2><div className="compat-table"><div><span>{item.name} + ниацинамид</span><strong><Check size={16}/>совместимы</strong></div><div><span>{item.name} + витамин C</span><strong><Check size={16}/>обычно совместимы</strong></div><div><span>{item.name} + кислоты</span><strong className="caution">△ оценивать переносимость</strong></div></div><h2 id="i7">Побочные эффекты и осторожность</h2><InfoBox title="Если кожа реагирует" tone="warning"><p>При выраженном или сохраняющемся раздражении прекратите использование нового средства. При необычной реакции лучше обратиться к врачу.</p></InfoBox><FAQ/></article></div><section className="related"><SectionHeading title="Похожие ингредиенты"/><div className="ingredient-grid">{ingredients.filter(i=>i.slug!==item.slug).slice(0,4).map(i=><IngredientCard key={i.slug} ingredient={i}/>)}</div></section></main>}
 
-export function ProceduresPage(){return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Процедуры'}]}/><div className="page-intro"><p className="eyebrow">Beauty-процедуры</p><h1>Процедуры для лица, волос и тела</h1><p>Что происходит на процедуре, как подготовиться, как проходит восстановление и какие вопросы стоит задать специалисту заранее.</p></div><div className="chip-row filter-chips">{['Для лица','Для волос','Для тела','Инъекционные','Аппаратные','Домашний уход'].map(x=><button className="chip" key={x}>{x}</button>)}</div><div className="procedure-grid">{procedures.map(p=><Link to={`/procedures/${p.slug}`} key={p.slug} className="procedure-card"><img src={p.image} alt=""/><div><span>{p.type}</span><h3>{p.title}</h3><p>{p.excerpt}</p><b>Подробнее <ArrowRight size={14}/></b></div></Link>)}</div></main>}
+export function ProceduresPage(){
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:'Процедуры'}]}/>
+    <div className="page-intro">
+      <p className="eyebrow">Beauty-процедуры</p>
+      <h1>Процедуры для лица, волос и тела</h1>
+      <p>Подробные профессиональные разборы: кому подходит процедура, как мастер оценивает исходное состояние, что происходит на сеансе, как подготовиться и как ухаживать за собой после.</p>
+    </div>
+    <div className="procedure-grid">
+      {procedures.map(p=><Link to={`/procedures/${p.slug}`} key={p.slug} className="procedure-card">
+        <img src={p.image} alt={p.title} loading="lazy"/>
+        <div>
+          <span>{p.type} · {p.readingTime}</span>
+          <h3>{p.title}</h3>
+          <p>{p.excerpt}</p>
+          <b>Профессиональный разбор <ArrowRight size={14}/></b>
+        </div>
+      </Link>)}
+    </div>
+  </main>
+}
 
-export function ProcedurePage(){const {slug}=useParams();const p=procedures.find(x=>x.slug===slug)||procedures[0];return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Процедуры',to:'/procedures'},{label:p.title}]}/><div className="procedure-hero"><img src={p.image} alt=""/><div><span className="category-label">{p.type}</span><h1>{p.title}</h1><p>{p.excerpt}</p><div className="procedure-note"><ShieldCheck/><span>Информация носит ознакомительный характер. Для процедур с медицинскими ограничениями ориентируйтесь на очную консультацию квалифицированного специалиста.</span></div></div></div><article className="article-content centered"><h2>Что это</h2><p>{p.title} — процедура, результат и переносимость которой зависят от исходного состояния, оборудования или используемой техники и квалификации специалиста.</p><h2>Как проходит</h2><p>До начала стоит обсудить ожидания, подготовку, ограничения и план восстановления. Конкретный протокол зависит от процедуры и индивидуальной ситуации.</p><h2>Сколько процедур необходимо</h2><p>Количество сеансов нельзя корректно определить только по общему описанию: оно зависит от цели, используемой технологии и реакции организма.</p>
-  {/*<AdSlot/>*/}
-  <h2>Подготовка</h2><ul><li>уточнить ограничения и противопоказания;</li><li>сообщить специалисту о принимаемых препаратах и недавних процедурах;</li><li>следовать инструкции клиники или мастера.</li></ul><h2>Уход после процедуры</h2><p>Первые рекомендации даёт специалист, который выполнял процедуру. Для многих процедур важны мягкий уход, защита от солнца и временный отказ от раздражающих активов.</p><h2>Противопоказания</h2><p>Они зависят от конкретной технологии. Не используйте универсальные списки как замену медицинскому опросу перед процедурой.</p><h2>Частые вопросы</h2><FAQ/></article><section className="related"><SectionHeading title="Похожие процедуры"/><div className="procedure-grid">{procedures.filter(x=>x.slug!==p.slug).slice(0,3).map(x=><Link to={`/procedures/${x.slug}`} key={x.slug} className="procedure-card"><img src={x.image} alt=""/><div><span>{x.type}</span><h3>{x.title}</h3><p>{x.excerpt}</p></div></Link>)}</div></section></main>}
+export function ProcedurePage(){
+  const {slug}=useParams();
+  const p=procedures.find(x=>x.slug===slug)||procedures[0];
 
-export function GuidesPage(){return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Гайды'}]}/><div className="page-intro"><p className="eyebrow">Пошагово</p><h1>Beauty-гайды</h1><p>Большие структурированные материалы для тех, кто хочет разобраться в теме последовательно — без десятка открытых вкладок.</p></div><div className="guide-grid large">{guides.map(g=><Link to={`/guides/${g.slug}`} className="guide-card" key={g.slug}><span className="guide-number">{g.number}</span><img src={g.image} alt=""/><div><h3>{g.title}</h3><p>{g.description}</p><span>Открыть гайд <ArrowRight size={14}/></span></div></Link>)}</div></main>}
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:'Процедуры',to:'/procedures'},{label:p.title}]}/>
+    <div className="procedure-hero">
+      <img src={p.image} alt={p.title}/>
+      <div>
+        <span className="category-label">{p.type}</span>
+        <h1>{p.title}</h1>
+        <p>{p.excerpt}</p>
+        <div className="procedure-note"><ShieldCheck/><span>Материал помогает подготовиться к разговору со специалистом, но не заменяет очную консультацию. Противопоказания и рабочий протокол всегда оцениваются индивидуально.</span></div>
+      </div>
+    </div>
 
-export function GuidePage(){const {slug}=useParams();const g=guides.find(x=>x.slug===slug)||guides[0];return <main className="guide-page"><div className="section-wrap page-block"><Breadcrumbs items={[{label:'Гайды',to:'/guides'},{label:g.title}]}/><div className="guide-hero"><div><span className="guide-number big">{g.number}</span><p className="eyebrow">Большой beauty-гайд</p><h1>{g.title}</h1><p>{g.description}</p><div className="progress-line"><span style={{width:'35%'}}></span></div><small>4 главы · 18 минут</small></div><img src={g.image} alt=""/></div><div className="guide-chapters"><div className="guide-toc"><strong>В этом гайде</strong>{['Определяем отправную точку','Собираем базовый уход','Добавляем активы под задачу','Проверяем схему и корректируем'].map((x,i)=><a href={`#g${i}`} key={x}><span>0{i+1}</span>{x}</a>)}</div><article className="article-content"><h2 id="g0">1. Определяем отправную точку</h2><p>Начните не со списка модных ингредиентов, а с наблюдений за кожей: как она чувствует себя после умывания, где появляется блеск, есть ли стянутость и какие средства уже используются.</p><div className="checklist"><h3>Мини-чеклист</h3>{['Запишите текущие средства','Определите одну главную задачу','Уберите дублирующие активы','Оцените комфорт базового ухода'].map(x=><label key={x}><input type="checkbox"/>{x}</label>)}</div><h2 id="g1">2. Собираем базовый уход</h2><div className="steps"><div><span>01</span><h3>Очищение</h3><p>Мягкое и достаточное для вашей схемы.</p></div><div><span>02</span><h3>Увлажнение</h3><p>Текстура подбирается по комфорту.</p></div><div><span>03</span><h3>SPF</h3><p>Особенно важен при активном уходе.</p></div></div>
-  {/*<AdSlot/>*/}
-  <h2 id="g2">3. Добавляем активы под задачу</h2><p>Добавляйте один компонент за раз и дайте схеме время. Так проще оценить результат и переносимость.</p><InfoBox title="Правило гида" tone="good"><p>Сначала стабильная база, затем один целевой актив. Сложная рутина не обязательно эффективнее простой.</p></InfoBox><h2 id="g3">4. Проверяем схему и корректируем</h2><p>Через несколько недель оцените комфорт, регулярность и то, насколько схема реально вписывается в жизнь. Уход должен быть выполнимым, а не идеальным на бумаге.</p><FAQ/></article></div><section className="related"><SectionHeading title="Другие гайды"/><div className="guide-grid">{guides.filter(x=>x.slug!==g.slug).slice(0,3).map(x=><Link to={`/guides/${x.slug}`} className="guide-card" key={x.slug}><span className="guide-number">{x.number}</span><img src={x.image} alt=""/><div><h3>{x.title}</h3><p>{x.description}</p></div></Link>)}</div></section></div></main>}
+    <article className="article-content centered">
+      <div className="steps">
+        {p.quickFacts.map((fact,index)=><div key={fact.label}><span>{String(index+1).padStart(2,'0')}</span><h3>{fact.label}</h3><p>{fact.value}</p></div>)}
+      </div>
+
+      <h2>Кому процедура может подойти</h2>
+      <ul>{p.suitableFor.map(item=><li key={item}>{item}</li>)}</ul>
+
+      <h2>Какого результата ожидать</h2>
+      <ul>{p.expectedResults.map(item=><li key={item}>{item}</li>)}</ul>
+
+      {p.sections.map(section=><section key={section.title}>
+        <h2>{section.title}</h2>
+        {section.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
+        {section.bullets && <ul>{section.bullets.map(item=><li key={item}>{item}</li>)}</ul>}
+      </section>)}
+
+      <h2>Как подготовиться</h2>
+      <div className="checklist"><h3>Чек-лист перед визитом</h3>{p.preparation.map(item=><label key={item}><input type="checkbox"/>{item}</label>)}</div>
+
+      <h2>Уход после процедуры</h2>
+      <ul>{p.aftercare.map(item=><li key={item}>{item}</li>)}</ul>
+
+      <h2>Когда процедуру лучше отложить</h2>
+      <InfoBox title="Ограничения требуют индивидуальной оценки" tone="warning"><ul>{p.contraindications.map(item=><li key={item}>{item}</li>)}</ul></InfoBox>
+
+      <h2>Советы мастера</h2>
+      <InfoBox title="Что отличает профессиональный подход" tone="good"><ul>{p.masterTips.map(item=><li key={item}>{item}</li>)}</ul></InfoBox>
+
+      <h2>Частые вопросы</h2>
+      <div className="faq">{p.faq.map(item=><details key={item.question}><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}</div>
+    </article>
+
+    <section className="related">
+      <SectionHeading title="Похожие процедуры"/>
+      <div className="procedure-grid">{procedures.filter(x=>x.slug!==p.slug).slice(0,3).map(x=><Link to={`/procedures/${x.slug}`} key={x.slug} className="procedure-card"><img src={x.image} alt={x.title} loading="lazy"/><div><span>{x.type}</span><h3>{x.title}</h3><p>{x.excerpt}</p></div></Link>)}</div>
+    </section>
+  </main>
+}
+
+export function GuidesPage(){
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:'Гайды'}]}/>
+    <div className="page-intro">
+      <p className="eyebrow">Пошагово</p>
+      <h1>Beauty-гайды</h1>
+      <p>Большие практические материалы с логикой профессионального мастера: как оценить исходную ситуацию, собрать рабочую схему, избежать типичных ошибок и понять, когда уход действительно стоит менять.</p>
+    </div>
+    <div className="guide-grid large">
+      {guides.map(g=><Link to={`/guides/${g.slug}`} className="guide-card" key={g.slug}>
+        <span className="guide-number">{g.number}</span>
+        <img src={g.image} alt={g.title} loading="lazy"/>
+        <div><h3>{g.title}</h3><p>{g.description}</p><span>{g.chapters.length} глав · {g.readingTime} <ArrowRight size={14}/></span></div>
+      </Link>)}
+    </div>
+  </main>
+}
+
+export function GuidePage(){
+  const {slug}=useParams();
+  const g=guides.find(x=>x.slug===slug)||guides[0];
+
+  return <main className="guide-page">
+    <div className="section-wrap page-block">
+      <Breadcrumbs items={[{label:'Гайды',to:'/guides'},{label:g.title}]}/>
+      <div className="guide-hero">
+        <div>
+          <span className="guide-number big">{g.number}</span>
+          <p className="eyebrow">Большой beauty-гайд</p>
+          <h1>{g.title}</h1>
+          <p>{g.description}</p>
+          <div className="progress-line"><span style={{width:'35%'}}></span></div>
+          <small>{g.chapters.length} глав · {g.readingTime}</small>
+        </div>
+        <img src={g.image} alt={g.title}/>
+      </div>
+
+      <div className="guide-chapters">
+        <div className="guide-toc">
+          <strong>В этом гайде</strong>
+          {g.chapters.map((chapter,i)=><a href={`#${chapter.id}`} key={chapter.id}><span>{String(i+1).padStart(2,'0')}</span>{chapter.title}</a>)}
+        </div>
+
+        <article className="article-content">
+          <p className="lead">{g.intro}</p>
+
+          {g.chapters.map((chapter,index)=><section key={chapter.id}>
+            <h2 id={chapter.id}>{index+1}. {chapter.title}</h2>
+            {chapter.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
+
+            {chapter.steps && <div className="steps">{chapter.steps.map((step,i)=><div key={step.title}><span>{String(i+1).padStart(2,'0')}</span><h3>{step.title}</h3><p>{step.text}</p></div>)}</div>}
+
+            {chapter.checklist && <div className="checklist"><h3>Практический чек-лист</h3>{chapter.checklist.map(item=><label key={item}><input type="checkbox"/>{item}</label>)}</div>}
+
+            {chapter.note && <InfoBox title="Комментарий мастера" tone="good"><p>{chapter.note}</p></InfoBox>}
+          </section>)}
+
+          <h2>Правила профессионального подхода</h2>
+          <InfoBox title="Сохраните как шпаргалку" tone="good"><ul>{g.professionalRules.map(rule=><li key={rule}>{rule}</li>)}</ul></InfoBox>
+
+          <h2>Частые вопросы</h2>
+          <div className="faq">{g.faq.map(item=><details key={item.question}><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}</div>
+        </article>
+      </div>
+
+      <section className="related">
+        <SectionHeading title="Другие гайды"/>
+        <div className="guide-grid">{guides.filter(x=>x.slug!==g.slug).slice(0,3).map(x=><Link to={`/guides/${x.slug}`} className="guide-card" key={x.slug}><span className="guide-number">{x.number}</span><img src={x.image} alt={x.title} loading="lazy"/><div><h3>{x.title}</h3><p>{x.description}</p></div></Link>)}</div>
+      </section>
+    </div>
+  </main>
+}
 
 export function TestsPage(){return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Тесты'}]}/><div className="page-intro"><p className="eyebrow">Интерактив</p><h1>Beauty-тесты и инструменты</h1><p>Небольшие интерактивные помощники, которые дают ориентир и ведут к подробным материалам по теме.</p></div><div className="tests-grid">{tests.map((t,i)=><Link to={`/tests/${t.slug}`} key={t.slug}><span className="test-icon">{i%2?<FlaskConical/>:<Sparkles/>}</span><h3>{t.title}</h3><p>{t.description}</p><b>Начать <ArrowRight size={14}/></b></Link>)}</div></main>}
 

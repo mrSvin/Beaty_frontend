@@ -1,5 +1,10 @@
 import {ingredients} from "@/beauty/contentIngredient";
 import {tests} from "@/beauty/contentTests";
+import {guides} from "@/beauty/contentGuides";
+import {procedures} from "@/beauty/contentProcedures";
+
+export {guides} from "@/beauty/contentGuides";
+export {procedures} from "@/beauty/contentProcedures";
 
 export type Article = {
   slug: string;
@@ -952,23 +957,6 @@ export const manicureTopics: ManicureTopic[] = [
     relatedSlugs: ['nyudovyy-manikyur','frantsuzskiy-manikyur','korotkie-nogti'], keywords: ['минималистичный маникюр','простой дизайн ногтей','маникюр минимализм']
   },
 ];
-
-export const guides = [
-  { slug: 'polnyy-gid-po-uhodu', number: '01', title: 'Полный гид по уходу за кожей', description: 'От определения типа кожи до понятной утренней и вечерней схемы.', image: images.portrait },
-  { slug: 'bazovyy-uhod', number: '02', title: 'Как построить базовый уход', description: 'Минимум средств, понятная последовательность и критерии выбора.', image: images.skincare },
-  { slug: 'kak-chitat-sostav', number: '03', title: 'Как читать состав косметики', description: 'Как ориентироваться в INCI и не делать выводы по одному ингредиенту.', image: images.serum },
-  { slug: 'utro-vecher', number: '04', title: 'Что наносить утром и вечером', description: 'Удобная схема слоёв с примерами для разных задач кожи.', image: images.sunscreen },
-];
-
-export const procedures = [
-  { slug: 'laser-hair-removal', title: 'Лазерная эпиляция', type: 'Аппаратные', image: images.procedure, excerpt: 'Как проходит процедура, как подготовиться и чего ожидать от курса.' },
-  { slug: 'chemical-peeling', title: 'Химический пилинг', type: 'Для лица', image: images.portrait, excerpt: 'Виды пилингов, восстановление и факторы, которые важно обсудить со специалистом.' },
-  { slug: 'hair-lamination', title: 'Ламинирование волос', type: 'Для волос', image: images.hair, excerpt: 'Что даёт процедура, кому подходит и как меняется домашний уход.' },
-  { slug: 'facial-massage', title: 'Массаж лица', type: 'Домашний уход', image: images.hero, excerpt: 'Ручные техники, ограничения и реалистичные ожидания от регулярного массажа.' },
-];
-
-
-
 
 export const cosmeticsGroups: { id: CosmeticsTopicGroup; title: string; description: string }[] = [
   {
