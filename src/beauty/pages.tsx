@@ -54,76 +54,76 @@ export function HomePage() {
   const [query, setQuery] = useState('');
 
   return (
-    <main>
-      <section className="hero section-wrap">
-        <div className="hero-copy">
-          <Badge>Beauty без сложных терминов</Badge>
-          <h1>Всё об уходе, косметике и красоте</h1>
-          <p>Разбираем составы, процедуры и уход без перегруза обещаниями. Понятные статьи, большие гайды и инструменты, которые помогают ориентироваться в beauty-теме.</p>
-          <div className="hero-search-wrap">
-            <SearchField value={query} onChange={setQuery} />
-            {query && (
-              <div className="hero-suggestions">
-                {[...articles.map(a => ({title:a.title,to:`/articles/${a.slug}`})), ...ingredients.map(i => ({title:i.name,to:`/ingredients/${i.slug}`}))]
-                  .filter(x => x.title.toLowerCase().includes(query.toLowerCase())).slice(0,5).map(x => <Link key={x.to} to={x.to}>{x.title}<ArrowRight size={15}/></Link>)}
-              </div>
-            )}
+      <main>
+        <section className="hero section-wrap">
+          <div className="hero-copy">
+            <Badge>Beauty без сложных терминов</Badge>
+            <h1>Всё об уходе, косметике и красоте</h1>
+            <p>Разбираем составы, процедуры и уход без перегруза обещаниями. Понятные статьи, большие гайды и инструменты, которые помогают ориентироваться в beauty-теме.</p>
+            <div className="hero-search-wrap">
+              <SearchField value={query} onChange={setQuery} />
+              {query && (
+                  <div className="hero-suggestions">
+                    {[...articles.map(a => ({title:a.title,to:`/articles/${a.slug}`})), ...ingredients.map(i => ({title:i.name,to:`/ingredients/${i.slug}`}))]
+                        .filter(x => x.title.toLowerCase().includes(query.toLowerCase())).slice(0,5).map(x => <Link key={x.to} to={x.to}>{x.title}<ArrowRight size={15}/></Link>)}
+                  </div>
+              )}
+            </div>
+            <div className="search-prompts"><span>Попробуйте:</span><Link to="/ingredients/retinol">Ретинол</Link><Link to="/articles/kak-vybrat-spf">Как выбрать SPF</Link><Link to="/category/skin/zhirnaya-kozha">Уход за жирной кожей</Link></div>
           </div>
-          <div className="search-prompts"><span>Попробуйте:</span><Link to="/ingredients/retinol">Ретинол</Link><Link to="/articles/kak-vybrat-spf">Как выбрать SPF</Link><Link to="/category/skin/zhirnaya-kozha">Уход за жирной кожей</Link></div>
-        </div>
-        <div className="hero-media"><img src={images.hero} alt="Косметические средства и уход за кожей"/><div className="hero-note"><span>Новый гайд</span><strong>Как собрать базовый уход</strong><Link to="/guides/bazovyy-uhod">Читать <ArrowRight size={14}/></Link></div></div>
-      </section>
+          <div className="hero-media"><img src={images.hero} alt="Косметические средства и уход за кожей"/><div className="hero-note"><span>Новый гайд</span><strong>Как собрать базовый уход</strong><Link to="/guides/bazovyy-uhod">Читать <ArrowRight size={14}/></Link></div></div>
+        </section>
 
-      <section className="section-wrap section-block">
-        <SectionHeading eyebrow="Навигация" title="Популярные категории" text="Начните с темы, которая интересует вас сейчас." />
-        <div className="category-grid">{categories.map((item) => {
-          const to = item.slug === 'ingredients' ? '/ingredients' : item.slug === 'procedures' ? '/procedures' : item.slug === 'guides' ? '/guides' : `/category/${item.slug}`;
-          return <Link to={to} className="category-card" key={item.slug}><img src={item.image} alt="" loading="lazy"/><div><h3>{item.name}</h3><p>{item.description}</p><span>Смотреть раздел <ArrowRight size={14}/></span></div></Link>
-        })}</div>
-      </section>
+        <section className="section-wrap section-block">
+          <SectionHeading eyebrow="Навигация" title="Популярные категории" text="Начните с темы, которая интересует вас сейчас." />
+          <div className="category-grid">{categories.map((item) => {
+            const to = item.slug === 'ingredients' ? '/ingredients' : item.slug === 'procedures' ? '/procedures' : item.slug === 'guides' ? '/guides' : `/category/${item.slug}`;
+            return <Link to={to} className="category-card" key={item.slug}><img src={item.image} alt="" loading="lazy"/><div><h3>{item.name}</h3><p>{item.description}</p><span>Смотреть раздел <ArrowRight size={14}/></span></div></Link>
+          })}</div>
+        </section>
 
-      <section className="section-muted section-block"><div className="section-wrap">
-        <SectionHeading eyebrow="Редакция выбирает" title="Популярное сейчас" action={<Link className="text-link" to="/articles">Все статьи <ArrowRight size={15}/></Link>} />
-        <div className="articles-grid featured-grid">{articles.slice(0,4).map((article, index) => <ArticleCard key={article.slug} article={article} featured={index===0}/>)}</div>
-      </div></section>
+        <section className="section-muted section-block"><div className="section-wrap">
+          <SectionHeading eyebrow="Редакция выбирает" title="Популярное сейчас" action={<Link className="text-link" to="/articles">Все статьи <ArrowRight size={15}/></Link>} />
+          <div className="articles-grid featured-grid">{articles.slice(0,4).map((article, index) => <ArticleCard key={article.slug} article={article} featured={index===0}/>)}</div>
+        </div></section>
 
-      <section className="section-wrap section-block">
-        <div className="finder-panel">
-          <div className="finder-copy"><p className="eyebrow">Персональный ориентир</p><h2>Найдите уход для себя</h2><p>Выберите тип кожи и основную задачу. Мы покажем материалы, с которых удобно начать.</p><div className="finder-illustration"><Sparkles/><span>2 шага</span></div></div>
-          <div className="finder-form">
-            <div><label>Тип кожи</label><div className="chip-row">{skinTypes.map(x => <button className={skinType===x?'chip active':'chip'} onClick={()=>setSkinType(x)} key={x}>{x}</button>)}</div></div>
-            <div><label>Основная задача</label><div className="chip-row">{skinProblems.map(x => <button className={problem===x?'chip active':'chip'} onClick={()=>setProblem(x)} key={x}>{x}</button>)}</div></div>
-            <Link className={`primary-btn ${!skinType || !problem ? 'soft-disabled':''}`} to={problem ? `/category/skin/${careTopicByLabel[problem]}` : skinType ? `/category/skin/${careTopicByLabel[skinType]}` : '/category/skin'}>Подобрать рекомендации <ArrowRight size={16}/></Link>
+        <section className="section-wrap section-block">
+          <div className="finder-panel">
+            <div className="finder-copy"><p className="eyebrow">Персональный ориентир</p><h2>Найдите уход для себя</h2><p>Выберите тип кожи и основную задачу. Мы покажем материалы, с которых удобно начать.</p><div className="finder-illustration"><Sparkles/><span>2 шага</span></div></div>
+            <div className="finder-form">
+              <div><label>Тип кожи</label><div className="chip-row">{skinTypes.map(x => <button className={skinType===x?'chip active':'chip'} onClick={()=>setSkinType(x)} key={x}>{x}</button>)}</div></div>
+              <div><label>Основная задача</label><div className="chip-row">{skinProblems.map(x => <button className={problem===x?'chip active':'chip'} onClick={()=>setProblem(x)} key={x}>{x}</button>)}</div></div>
+              <Link className={`primary-btn ${!skinType || !problem ? 'soft-disabled':''}`} to={problem ? `/category/skin/${careTopicByLabel[problem]}` : skinType ? `/category/skin/${careTopicByLabel[skinType]}` : '/category/skin'}>Подобрать рекомендации <ArrowRight size={16}/></Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="ingredients-section section-block"><div className="section-wrap">
-        <SectionHeading eyebrow="Beauty-энциклопедия" title="Ингредиенты косметики" text="Что делает компонент, кому подходит, с чем сочетается и где стоит быть осторожнее." action={<Link className="secondary-btn" to="/ingredients">Все ингредиенты</Link>} />
-        <div className="ingredient-grid">{ingredients.slice(0,8).map(i => <IngredientCard key={i.slug} ingredient={i}/>)}</div>
-      </div></section>
+        <section className="ingredients-section section-block"><div className="section-wrap">
+          <SectionHeading eyebrow="Beauty-энциклопедия" title="Ингредиенты косметики" text="Что делает компонент, кому подходит, с чем сочетается и где стоит быть осторожнее." action={<Link className="secondary-btn" to="/ingredients">Все ингредиенты</Link>} />
+          <div className="ingredient-grid">{ingredients.slice(0,8).map(i => <IngredientCard key={i.slug} ingredient={i}/>)}</div>
+        </div></section>
 
-      {/*<AdSlot />*/}
+        {/*<AdSlot />*/}
 
-      <section className="section-wrap section-block">
-        <SectionHeading eyebrow="Сохранить в закладки" title="Beauty-гайды" text="Большие пошаговые материалы с чек-листами, схемами и короткими выводами." />
-        <div className="guide-grid">{guides.map(g => <Link to={`/guides/${g.slug}`} className="guide-card" key={g.slug}><span className="guide-number">{g.number}</span><img src={g.image} alt="" loading="lazy"/><div><h3>{g.title}</h3><p>{g.description}</p><span>Открыть гайд <ArrowRight size={14}/></span></div></Link>)}</div>
-      </section>
+        <section className="section-wrap section-block">
+          <SectionHeading eyebrow="Сохранить в закладки" title="Beauty-гайды" text="Большие пошаговые материалы с чек-листами, схемами и короткими выводами." />
+          <div className="guide-grid">{guides.map(g => <Link to={`/guides/${g.slug}`} className="guide-card" key={g.slug}><span className="guide-number">{g.number}</span><img src={g.image} alt="" loading="lazy"/><div><h3>{g.title}</h3><p>{g.description}</p><span>Открыть гайд <ArrowRight size={14}/></span></div></Link>)}</div>
+        </section>
 
-      <section className="section-muted section-block"><div className="section-wrap">
-        <SectionHeading eyebrow="Свежие материалы" title="Новые статьи" />
-        <div className="articles-grid">{articles.slice(2,8).map(a => <ArticleCard key={a.slug} article={a}/>)}</div>
-      </div></section>
+        <section className="section-muted section-block"><div className="section-wrap">
+          <SectionHeading eyebrow="Свежие материалы" title="Новые статьи" />
+          <div className="articles-grid">{articles.slice(2,8).map(a => <ArticleCard key={a.slug} article={a}/>)}</div>
+        </div></section>
 
-      <section className="section-wrap section-block split-section">
-        <div><SectionHeading eyebrow="Подборки" title="Когда нужен быстрый список"/><div className="collection-list">
-          {['10 компонентов для сухой кожи','7 ошибок при использовании кислот','Лучшие ингредиенты для кожи после 30'].map((title,i)=><Link to="/articles" key={title}><span>0{i+1}</span><h3>{title}</h3><ArrowRight/></Link>)}
-        </div></div>
-        <div><SectionHeading eyebrow="Интерактив" title="Beauty-тесты и инструменты"/><div className="tool-list">{tests.slice(0,4).map(t=><Link to={`/tests/${t.slug}`} key={t.slug}><Sparkles size={18}/><div><h3>{t.title}</h3><p>{t.description}</p></div><ChevronRight size={18}/></Link>)}</div></div>
-      </section>
+        <section className="section-wrap section-block split-section">
+          <div><SectionHeading eyebrow="Подборки" title="Когда нужен быстрый список"/><div className="collection-list">
+            {['10 компонентов для сухой кожи','7 ошибок при использовании кислот','Лучшие ингредиенты для кожи после 30'].map((title,i)=><Link to="/articles" key={title}><span>0{i+1}</span><h3>{title}</h3><ArrowRight/></Link>)}
+          </div></div>
+          <div><SectionHeading eyebrow="Интерактив" title="Beauty-тесты и инструменты"/><div className="tool-list">{tests.slice(0,4).map(t=><Link to={`/tests/${t.slug}`} key={t.slug}><Sparkles size={18}/><div><h3>{t.title}</h3><p>{t.description}</p></div><ChevronRight size={18}/></Link>)}</div></div>
+        </section>
 
-      <section className="seo-editorial"><div className="section-wrap seo-grid"><div><p className="eyebrow">BeautyGuide</p><h2>Красота — это тема, в которой особенно важны контекст и понятные объяснения</h2></div><div><p>Мы строим материалы так, чтобы от одной статьи можно было перейти к ингредиенту, затем к большому гайду, тесту или смежной теме. Это помогает не искать ответы по кусочкам и видеть всю картину ухода.</p><p>Редакционная структура BeautyGuide разделяет базовые знания, ингредиенты, процедуры, схемы ухода и прикладные материалы. Мы не заменяем консультацию врача или косметолога и отдельно отмечаем темы, где персональная рекомендация специалиста важнее универсального совета.</p></div></div></section>
-    </main>
+        <section className="seo-editorial"><div className="section-wrap seo-grid"><div><p className="eyebrow">BeautyGuide</p><h2>Красота — это тема, в которой особенно важны контекст и понятные объяснения</h2></div><div><p>Мы строим материалы так, чтобы от одной статьи можно было перейти к ингредиенту, затем к большому гайду, тесту или смежной теме. Это помогает не искать ответы по кусочкам и видеть всю картину ухода.</p><p>Редакционная структура BeautyGuide разделяет базовые знания, ингредиенты, процедуры, схемы ухода и прикладные материалы. Мы не заменяем консультацию врача или косметолога и отдельно отмечаем темы, где персональная рекомендация специалиста важнее универсального совета.</p></div></div></section>
+      </main>
   );
 }
 
@@ -744,8 +744,8 @@ function SkinTypeEditorial({ slug }: { slug: string }) {
 
     <h2 id="dry-routine">Базовая схема ухода утром и вечером</h2>
     <CareRoutine
-      morning={['Мягкое очищение или просто вода — по ощущениям кожи.', 'Увлажняющая сыворотка или эссенция при необходимости.', 'Крем с увлажнителями и липидами.', 'Солнцезащита в комфортной текстуре.']}
-      evening={['Деликатно снять SPF и макияж, если они были.', 'Умыться мягким средством без ощущения «скрипа».', 'Нанести увлажняющий или восстанавливающий продукт.', 'При необходимости закрыть уход более плотным кремом.']}
+        morning={['Мягкое очищение или просто вода — по ощущениям кожи.', 'Увлажняющая сыворотка или эссенция при необходимости.', 'Крем с увлажнителями и липидами.', 'Солнцезащита в комфортной текстуре.']}
+        evening={['Деликатно снять SPF и макияж, если они были.', 'Умыться мягким средством без ощущения «скрипа».', 'Нанести увлажняющий или восстанавливающий продукт.', 'При необходимости закрыть уход более плотным кремом.']}
     />
 
     <h2 id="dry-ingredients">Какие компоненты искать в составе</h2>
@@ -787,8 +787,8 @@ function SkinTypeEditorial({ slug }: { slug: string }) {
 
     <h2 id="oily-routine">Базовая схема ухода утром и вечером</h2>
     <CareRoutine
-      morning={['Умыться мягким гелем или пенкой.', 'При необходимости использовать лёгкий целевой актив.', 'Нанести лёгкий увлажняющий крем или эмульсию.', 'Завершить уход солнцезащитой.']}
-      evening={['Удалить SPF и макияж, если они были.', 'Мягко очистить кожу без жёстких щёток и скрабов.', 'Использовать один актив под главную задачу, если он нужен.', 'Нанести лёгкий увлажняющий продукт.']}
+        morning={['Умыться мягким гелем или пенкой.', 'При необходимости использовать лёгкий целевой актив.', 'Нанести лёгкий увлажняющий крем или эмульсию.', 'Завершить уход солнцезащитой.']}
+        evening={['Удалить SPF и макияж, если они были.', 'Мягко очистить кожу без жёстких щёток и скрабов.', 'Использовать один актив под главную задачу, если он нужен.', 'Нанести лёгкий увлажняющий продукт.']}
     />
 
     <h2 id="oily-ingredients">Какие компоненты могут быть полезны</h2>
@@ -1117,23 +1117,23 @@ export function ArticlePage() {
     <div className="article-header"><span className="category-label">{article.category}</span><h1>{article.title}</h1><p>{article.excerpt}</p><div className="author-row"><div className="author-avatar">АК</div><div><strong>Анна Крылова</strong><span>beauty-редактор</span></div><div className="article-dates"><span>Опубликовано: {article.date}</span><span>Обновлено: 20 сентября 2026 · {article.readTime}</span></div></div></div>
     <img className="article-hero-image" src={article.image} alt=""/>
     <div className="article-layout"><aside className="toc"><strong>Содержание</strong>{['Что это такое','Как работает','Кому подходит','Как начать использовать','С чем можно сочетать','С чем не стоит сочетать','Возможные реакции','Частые вопросы'].map((x,i)=><a href={`#s${i+1}`} key={x}>{x}</a>)}</aside>
-    <article className="article-content"><InfoBox title="Коротко" tone="good"><ul><li>Начинайте с простой и понятной схемы.</li><li>Добавляйте активы постепенно, а не все сразу.</li><li>Оценивайте переносимость и состояние кожного барьера.</li><li>Днём используйте солнцезащиту.</li></ul></InfoBox>
-      <p className="lead">{article.excerpt} Ниже — спокойная пошаговая схема, которая помогает понять логику ухода и не перегружать рутину.</p>
-      {/*<AdSlot/>*/}
-      <h2 id="s1">Что важно знать вначале</h2><p>У любого активного ухода есть контекст: тип кожи, текущая переносимость средств, частота применения и сочетание с другими компонентами. Поэтому универсальная «идеальная схема» редко работает одинаково для всех.</p>
-      <h2 id="s2">Как это работает</h2><p>Оценивать средство полезнее не по отдельному обещанию на упаковке, а по роли в общей схеме ухода. База обычно включает мягкое очищение, увлажнение и солнцезащиту; активы добавляются под конкретную задачу.</p>
-      <InfoBox title="Совет эксперта"><p>Меняйте один элемент рутины за раз. Так проще понять, что именно дало эффект или вызвало дискомфорт.</p></InfoBox>
-      <h2 id="s3">Кому подходит</h2><p>Выбор зависит не только от формального типа кожи, но и от её текущего состояния. Например, жирная кожа тоже может быть обезвоженной и чувствительной после слишком агрессивного ухода.</p>
-      <h3>На что смотреть</h3><ul><li>ощущения после умывания;</li><li>скорость появления жирного блеска;</li><li>реакцию на новые активы;</li><li>сезон и климат;</li><li>наличие регулярной солнцезащиты.</li></ul>
-      {/*<AdSlot/>*/}
-      <h2 id="s4">Как начать использовать</h2><p>Новый актив разумно вводить постепенно. Сначала используйте его реже, чем предполагает максимальная схема, и не меняйте одновременно остальные средства.</p>
-      <div className="steps"><div><span>01</span><h3>Стабилизируйте базу</h3><p>Очищение, увлажнение и SPF должны быть комфортными сами по себе.</p></div><div><span>02</span><h3>Добавьте один актив</h3><p>Выберите компонент под главную задачу и наблюдайте за переносимостью.</p></div><div><span>03</span><h3>Корректируйте частоту</h3><p>Увеличивайте её только при отсутствии выраженного дискомфорта.</p></div></div>
-      <h2 id="s5">С чем можно сочетать</h2><div className="compat-grid"><InfoBox title="Можно сочетать" tone="good"><p>Ниацинамид · гиалуроновая кислота · пептиды</p></InfoBox><InfoBox title="Лучше разводить по времени" tone="warning"><p>Сильные кислоты и несколько раздражающих активов одновременно.</p></InfoBox></div>
-      <h2 id="s6">С чем не стоит сочетать</h2><p>Чем больше потенциально раздражающих средств используется одновременно, тем сложнее понять причину реакции. Для чувствительной кожи особенно полезна консервативная схема.</p>
-      <h2 id="s7">Возможные реакции</h2><InfoBox title="Важно" tone="warning"><p>Стойкое жжение, выраженное покраснение, отёк или ухудшение состояния кожи — повод прекратить эксперимент и обратиться за очной профессиональной оценкой.</p></InfoBox>
-      {/*<AdSlot/>*/}
-      <h2 id="s8">Частые вопросы</h2><FAQ/>
-    </article><aside className="article-aside">
+      <article className="article-content"><InfoBox title="Коротко" tone="good"><ul><li>Начинайте с простой и понятной схемы.</li><li>Добавляйте активы постепенно, а не все сразу.</li><li>Оценивайте переносимость и состояние кожного барьера.</li><li>Днём используйте солнцезащиту.</li></ul></InfoBox>
+        <p className="lead">{article.excerpt} Ниже — спокойная пошаговая схема, которая помогает понять логику ухода и не перегружать рутину.</p>
+        {/*<AdSlot/>*/}
+        <h2 id="s1">Что важно знать вначале</h2><p>У любого активного ухода есть контекст: тип кожи, текущая переносимость средств, частота применения и сочетание с другими компонентами. Поэтому универсальная «идеальная схема» редко работает одинаково для всех.</p>
+        <h2 id="s2">Как это работает</h2><p>Оценивать средство полезнее не по отдельному обещанию на упаковке, а по роли в общей схеме ухода. База обычно включает мягкое очищение, увлажнение и солнцезащиту; активы добавляются под конкретную задачу.</p>
+        <InfoBox title="Совет эксперта"><p>Меняйте один элемент рутины за раз. Так проще понять, что именно дало эффект или вызвало дискомфорт.</p></InfoBox>
+        <h2 id="s3">Кому подходит</h2><p>Выбор зависит не только от формального типа кожи, но и от её текущего состояния. Например, жирная кожа тоже может быть обезвоженной и чувствительной после слишком агрессивного ухода.</p>
+        <h3>На что смотреть</h3><ul><li>ощущения после умывания;</li><li>скорость появления жирного блеска;</li><li>реакцию на новые активы;</li><li>сезон и климат;</li><li>наличие регулярной солнцезащиты.</li></ul>
+        {/*<AdSlot/>*/}
+        <h2 id="s4">Как начать использовать</h2><p>Новый актив разумно вводить постепенно. Сначала используйте его реже, чем предполагает максимальная схема, и не меняйте одновременно остальные средства.</p>
+        <div className="steps"><div><span>01</span><h3>Стабилизируйте базу</h3><p>Очищение, увлажнение и SPF должны быть комфортными сами по себе.</p></div><div><span>02</span><h3>Добавьте один актив</h3><p>Выберите компонент под главную задачу и наблюдайте за переносимостью.</p></div><div><span>03</span><h3>Корректируйте частоту</h3><p>Увеличивайте её только при отсутствии выраженного дискомфорта.</p></div></div>
+        <h2 id="s5">С чем можно сочетать</h2><div className="compat-grid"><InfoBox title="Можно сочетать" tone="good"><p>Ниацинамид · гиалуроновая кислота · пептиды</p></InfoBox><InfoBox title="Лучше разводить по времени" tone="warning"><p>Сильные кислоты и несколько раздражающих активов одновременно.</p></InfoBox></div>
+        <h2 id="s6">С чем не стоит сочетать</h2><p>Чем больше потенциально раздражающих средств используется одновременно, тем сложнее понять причину реакции. Для чувствительной кожи особенно полезна консервативная схема.</p>
+        <h2 id="s7">Возможные реакции</h2><InfoBox title="Важно" tone="warning"><p>Стойкое жжение, выраженное покраснение, отёк или ухудшение состояния кожи — повод прекратить эксперимент и обратиться за очной профессиональной оценкой.</p></InfoBox>
+        {/*<AdSlot/>*/}
+        <h2 id="s8">Частые вопросы</h2><FAQ/>
+      </article><aside className="article-aside">
         {/*<AdSlot tall/>*/}
         <div className="sidebar-box"><h3>Читайте также</h3>{articles.filter(a=>a.slug!==article.slug).slice(0,3).map(a=><Link to={`/articles/${a.slug}`} key={a.slug}>{a.title}<ChevronRight size={14}/></Link>)}</div></aside></div>
     <section className="related"><SectionHeading title="Вам также будет интересно"/><div className="articles-grid">{articles.filter(a=>a.slug!==article.slug).slice(0,4).map(a=><ArticleCard key={a.slug} article={a}/>)}</div><div className="tag-row"><strong>По этой теме:</strong>{article.tags.map(t=><Link to="/search" key={t}>#{t}</Link>)}</div></section>
@@ -1141,6 +1141,17 @@ export function ArticlePage() {
 }
 
 function FAQ(){const qs=['Можно ли использовать средство каждый день?','Когда ждать заметный эффект?','Можно ли сочетать несколько активов?','Что делать, если появилась сухость?','Нужен ли SPF круглый год?'];return <div className="faq">{qs.map((q,i)=><details key={q}><summary>{q}<span>+</span></summary><p>{i===4?'Для большинства активных схем дневная фотозащита особенно важна. Ориентируйтесь на условия дня и рекомендации дерматологических организаций для вашего региона.':'Частота зависит от конкретного компонента, формулы и реакции кожи. Начинать обычно удобнее с более редкого применения и постепенно оценивать переносимость.'}</p></details>)}</div>}
+
+function IngredientFAQ({items}: {items: Array<{question: string; answer: string}>}) {
+  return <div className="faq">
+    {items.map(({question, answer}) => (
+        <details key={question}>
+          <summary>{question}<span>+</span></summary>
+          <p>{answer}</p>
+        </details>
+    ))}
+  </div>;
+}
 
 const INGREDIENT_PAGE_SIZE = 20;
 
@@ -1154,25 +1165,25 @@ export function IngredientsPage() {
   const chips = ['Все', 'Увлажнение', 'Анти-эйдж', 'Акне', 'Пигментация', 'Чувствительная кожа'];
 
   const alphabet = useMemo(
-    () => Array.from(new Set(ingredients.map((item) => item.name.trim().charAt(0).toUpperCase())))
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b, 'ru')),
-    [],
+      () => Array.from(new Set(ingredients.map((item) => item.name.trim().charAt(0).toUpperCase())))
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b, 'ru')),
+      [],
   );
 
   const list = useMemo(() => {
     const normalizedQuery = q.trim().toLowerCase();
     const normalizedFilter = filter
-      .toLowerCase()
-      .replace('анти-эйдж', 'обновление')
-      .replace('акне', 'проблемная');
+        .toLowerCase()
+        .replace('анти-эйдж', 'обновление')
+        .replace('акне', 'проблемная');
 
     return ingredients.filter((item) => {
       const matchesSearch = !normalizedQuery || item.name.toLowerCase().includes(normalizedQuery);
       const matchesFilter = filter === 'Все'
-        || `${item.benefits.join(' ')} ${item.skin.join(' ')}`.toLowerCase().includes(normalizedFilter);
+          || `${item.benefits.join(' ')} ${item.skin.join(' ')}`.toLowerCase().includes(normalizedFilter);
       const matchesLetter = !selectedLetter
-        || item.name.trim().charAt(0).toUpperCase() === selectedLetter;
+          || item.name.trim().charAt(0).toUpperCase() === selectedLetter;
 
       return matchesSearch && matchesFilter && matchesLetter;
     });
@@ -1189,12 +1200,12 @@ export function IngredientsPage() {
     if (!target || typeof IntersectionObserver === 'undefined') return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setVisibleCount((current) => Math.min(current + INGREDIENT_PAGE_SIZE, list.length));
-        }
-      },
-      { rootMargin: '400px 0px' },
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            setVisibleCount((current) => Math.min(current + INGREDIENT_PAGE_SIZE, list.length));
+          }
+        },
+        { rootMargin: '400px 0px' },
     );
 
     observer.observe(target);
@@ -1205,86 +1216,187 @@ export function IngredientsPage() {
   const hasMore = visibleCount < list.length;
 
   return (
-    <main className="section-wrap page-block">
-      <Breadcrumbs items={[{ label: 'Ингредиенты' }]} />
+      <main className="section-wrap page-block">
+        <Breadcrumbs items={[{ label: 'Ингредиенты' }]} />
 
-      <div className="page-intro wide">
-        <p className="eyebrow">Энциклопедия</p>
-        <h1>Ингредиенты косметики</h1>
-        <p>Понятный каталог компонентов: свойства, типы кожи, концентрации, совместимость и практические схемы использования.</p>
-      </div>
-
-      <SearchField value={q} onChange={setQ} placeholder="Найти ингредиент" />
-
-      <div className="chip-row filter-chips">
-        {chips.map((item) => (
-          <button
-            className={filter === item ? 'chip active' : 'chip'}
-            key={item}
-            onClick={() => setFilter(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
-      <div className="alphabet" aria-label="Фильтр ингредиентов по первой букве">
-        <button
-          className={!selectedLetter ? 'active alphabet-all' : 'alphabet-all'}
-          onClick={() => setSelectedLetter('')}
-          type="button"
-        >
-          Все
-        </button>
-        {alphabet.map((letter) => (
-          <button
-            className={selectedLetter === letter ? 'active' : ''}
-            key={letter}
-            onClick={() => setSelectedLetter(letter)}
-            type="button"
-            aria-pressed={selectedLetter === letter}
-          >
-            {letter}
-          </button>
-        ))}
-      </div>
-
-      <div className="ingredient-results-meta">
-        {selectedLetter
-          ? `На «${selectedLetter}»: ${list.length}`
-          : `Найдено ингредиентов: ${list.length}`}
-      </div>
-
-      <div className="ingredient-grid catalogue">
-        {visibleIngredients.map((item) => (
-          <IngredientCard key={item.slug} ingredient={item} />
-        ))}
-      </div>
-
-      {list.length === 0 && (
-        <div className="ingredient-empty">
-          По выбранным параметрам ингредиенты не найдены.
+        <div className="page-intro wide">
+          <p className="eyebrow">Энциклопедия</p>
+          <h1>Ингредиенты косметики</h1>
+          <p>Понятный каталог компонентов: свойства, типы кожи, концентрации, совместимость и практические схемы использования.</p>
         </div>
-      )}
 
-      <div
-        ref={loadMoreRef}
-        className="ingredient-load-more"
-        aria-live="polite"
-      >
-        {hasMore
-          ? `Показано ${visibleIngredients.length} из ${list.length}. Прокрутите ниже для загрузки следующих ${Math.min(INGREDIENT_PAGE_SIZE, list.length - visibleIngredients.length)}.`
-          : list.length > INGREDIENT_PAGE_SIZE
-            ? `Все ${list.length} ингредиентов загружены.`
-            : null}
-      </div>
-    </main>
+        <SearchField value={q} onChange={setQ} placeholder="Найти ингредиент" />
+
+        <div className="chip-row filter-chips">
+          {chips.map((item) => (
+              <button
+                  className={filter === item ? 'chip active' : 'chip'}
+                  key={item}
+                  onClick={() => setFilter(item)}
+              >
+                {item}
+              </button>
+          ))}
+        </div>
+
+        <div className="alphabet" aria-label="Фильтр ингредиентов по первой букве">
+          <button
+              className={!selectedLetter ? 'active alphabet-all' : 'alphabet-all'}
+              onClick={() => setSelectedLetter('')}
+              type="button"
+          >
+            Все
+          </button>
+          {alphabet.map((letter) => (
+              <button
+                  className={selectedLetter === letter ? 'active' : ''}
+                  key={letter}
+                  onClick={() => setSelectedLetter(letter)}
+                  type="button"
+                  aria-pressed={selectedLetter === letter}
+              >
+                {letter}
+              </button>
+          ))}
+        </div>
+
+        <div className="ingredient-results-meta">
+          {selectedLetter
+              ? `На «${selectedLetter}»: ${list.length}`
+              : `Найдено ингредиентов: ${list.length}`}
+        </div>
+
+        <div className="ingredient-grid catalogue">
+          {visibleIngredients.map((item) => (
+              <IngredientCard key={item.slug} ingredient={item} />
+          ))}
+        </div>
+
+        {list.length === 0 && (
+            <div className="ingredient-empty">
+              По выбранным параметрам ингредиенты не найдены.
+            </div>
+        )}
+
+        <div
+            ref={loadMoreRef}
+            className="ingredient-load-more"
+            aria-live="polite"
+        >
+          {hasMore
+              ? `Показано ${visibleIngredients.length} из ${list.length}. Прокрутите ниже для загрузки следующих ${Math.min(INGREDIENT_PAGE_SIZE, list.length - visibleIngredients.length)}.`
+              : list.length > INGREDIENT_PAGE_SIZE
+                  ? `Все ${list.length} ингредиентов загружены.`
+                  : null}
+        </div>
+      </main>
   );
 }
 
-export function IngredientPage(){const {slug}=useParams();const item=ingredients.find(i=>i.slug===slug)||ingredients[1];return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Ингредиенты',to:'/ingredients'},{label:item.name}]}/><div className="ingredient-hero"><div><p className="eyebrow">Ингредиент</p><h1>{item.name}</h1><span className="latin">{item.latin}</span><p>{item.description}</p></div><div className="ingredient-facts"><div><span>Тип</span><strong>{item.kind}</strong></div><div><span>Для кожи</span><strong>{item.skin.join(' · ')}</strong></div><div><span>Основные свойства</span><strong>{item.benefits.join(' · ')}</strong></div></div></div><div className="article-layout ingredient-layout"><aside className="toc"><strong>На странице</strong>{['Что это','Как работает','Для чего используется','Кому подходит','Концентрация','Как использовать','Совместимость','Осторожность'].map((x,i)=><a href={`#i${i}`} key={x}>{x}</a>)}</aside><article className="article-content"><h2 id="i0">Что такое {item.name.toLowerCase()}</h2><p>{item.description} В косметике свойства ингредиента зависят от формулы целиком, концентрации и способа применения.</p><h2 id="i1">Как работает</h2><p>Компонент рассматривают как часть общей системы ухода. Эффект зависит от регулярности, переносимости и того, насколько базовый уход поддерживает защитный барьер кожи.</p><h2 id="i2">Для чего используется</h2><ul>{item.benefits.map(x=><li key={x}>{x}</li>)}</ul><h2 id="i3">Кому подходит</h2><p>Чаще всего ориентируются на задачи кожи, а не только на её тип. В карточке выше перечислены наиболее типичные сценарии применения.</p>
-  {/*<AdSlot/>*/}
-  <h2 id="i4">Какая концентрация нужна</h2><p>Рабочая концентрация зависит от конкретного компонента и продукта. Более высокая цифра не означает автоматически более выраженный или более безопасный результат.</p><h2 id="i5">Как использовать</h2><p>Добавляйте средство постепенно и соблюдайте инструкцию производителя. При использовании активов, повышающих чувствительность к солнцу, уделяйте особое внимание фотозащите.</p><h2 id="i6">Совместимость ингредиентов</h2><div className="compat-table"><div><span>{item.name} + ниацинамид</span><strong><Check size={16}/>совместимы</strong></div><div><span>{item.name} + витамин C</span><strong><Check size={16}/>обычно совместимы</strong></div><div><span>{item.name} + кислоты</span><strong className="caution">△ оценивать переносимость</strong></div></div><h2 id="i7">Побочные эффекты и осторожность</h2><InfoBox title="Если кожа реагирует" tone="warning"><p>При выраженном или сохраняющемся раздражении прекратите использование нового средства. При необычной реакции лучше обратиться к врачу.</p></InfoBox><FAQ/></article></div><section className="related"><SectionHeading title="Похожие ингредиенты"/><div className="ingredient-grid">{ingredients.filter(i=>i.slug!==item.slug).slice(0,4).map(i=><IngredientCard key={i.slug} ingredient={i}/>)}</div></section></main>}
+export function IngredientPage() {
+  const {slug} = useParams();
+  const item = ingredients.find((ingredient) => ingredient.slug === slug) || ingredients[0];
+  const compatibilityFaq = item.faq.find(({question}) =>
+      question.toLowerCase().includes('с чем') || question.toLowerCase().includes('сочет')
+  );
+
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[
+      {label: 'Ингредиенты', to: '/ingredients'},
+      {label: item.name},
+    ]}/>
+
+    <div className="ingredient-hero">
+      <div>
+        <p className="eyebrow">Ингредиент</p>
+        <h1>{item.name}</h1>
+        <span className="latin">{item.latin}</span>
+        <p>{item.description}</p>
+      </div>
+
+      <div className="ingredient-facts">
+        <div><span>Тип</span><strong>{item.kind}</strong></div>
+        <div><span>Для кожи</span><strong>{item.skin.join(' · ')}</strong></div>
+        <div><span>Основные свойства</span><strong>{item.benefits.join(' · ')}</strong></div>
+      </div>
+    </div>
+
+    <div className="article-layout ingredient-layout">
+      <aside className="toc">
+        <strong>На странице</strong>
+        {[
+          'Что это',
+          'Как работает',
+          'Для чего используется',
+          'Кому подходит',
+          'Концентрация',
+          'Как использовать',
+          'Совместимость',
+          'Осторожность',
+          'Частые вопросы',
+        ].map((label, index) => <a href={`#i${index}`} key={label}>{label}</a>)}
+      </aside>
+
+      <article className="article-content">
+        <h2 id="i0">Что такое {item.name.toLowerCase()}</h2>
+        <p>{item.description}</p>
+
+        <h2 id="i1">Как работает</h2>
+        <p>{item.howItWorks}</p>
+
+        <h2 id="i2">Для чего используется</h2>
+        <ul>
+          {item.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+        </ul>
+
+        <h2 id="i3">Кому подходит</h2>
+        <p>
+          Чаще всего {item.name.toLowerCase()} рассматривают для кожи со следующими характеристиками:
+          {' '}{item.skin.join(', ')}. При этом выбор конкретной формулы зависит не только от типа кожи,
+          но и от концентрации, основы средства и остальных активов в уходе.
+        </p>
+
+        {/*<AdSlot/>*/}
+
+        <h2 id="i4">Какая концентрация нужна</h2>
+        <p>{item.concentration}</p>
+
+        <h2 id="i5">Как использовать</h2>
+        <p>{item.howToUse}</p>
+
+        <h2 id="i6">Совместимость ингредиентов</h2>
+        {compatibilityFaq
+            ? <p>{compatibilityFaq.answer}</p>
+            : <p>
+              Совместимость зависит от всей формулы и чувствительности кожи. Если в схеме уже есть
+              несколько потенциально раздражающих активов, новые средства лучше вводить по одному.
+            </p>}
+
+        <h2 id="i7">Побочные эффекты и осторожность</h2>
+        <InfoBox title="Если кожа реагирует" tone="warning">
+          <p>
+            Если после введения средства появляются стойкое жжение, болезненность, выраженное
+            покраснение, отёк или состояние кожи заметно ухудшается, средство стоит отменить.
+            При необычной или сильной реакции лучше обратиться к врачу.
+          </p>
+        </InfoBox>
+
+        <h2 id="i8">Частые вопросы</h2>
+        <IngredientFAQ items={item.faq}/>
+      </article>
+    </div>
+
+    <section className="related">
+      <SectionHeading title="Похожие ингредиенты"/>
+      <div className="ingredient-grid">
+        {ingredients
+            .filter((ingredient) => ingredient.slug !== item.slug)
+            .slice(0, 4)
+            .map((ingredient) => <IngredientCard key={ingredient.slug} ingredient={ingredient}/>)}
+      </div>
+    </section>
+  </main>;
+}
 
 export function ProceduresPage(){
   return <main className="section-wrap page-block">
