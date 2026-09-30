@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {
   ArrowRight,
   Check,
@@ -1140,7 +1140,145 @@ export function ArticlePage() {
 
 function FAQ(){const qs=['Можно ли использовать средство каждый день?','Когда ждать заметный эффект?','Можно ли сочетать несколько активов?','Что делать, если появилась сухость?','Нужен ли SPF круглый год?'];return <div className="faq">{qs.map((q,i)=><details key={q}><summary>{q}<span>+</span></summary><p>{i===4?'Для большинства активных схем дневная фотозащита особенно важна. Ориентируйтесь на условия дня и рекомендации дерматологических организаций для вашего региона.':'Частота зависит от конкретного компонента, формулы и реакции кожи. Начинать обычно удобнее с более редкого применения и постепенно оценивать переносимость.'}</p></details>)}</div>}
 
-export function IngredientsPage(){const [q,setQ]=useState('');const [filter,setFilter]=useState('Все');const chips=['Все','Увлажнение','Анти-эйдж','Акне','Пигментация','Чувствительная кожа'];const list=ingredients.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())&&(filter==='Все'||`${i.benefits.join(' ')} ${i.skin.join(' ')}`.toLowerCase().includes(filter.toLowerCase().replace('анти-эйдж','обновление').replace('акне','проблемная'))));return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Ингредиенты'}]}/><div className="page-intro wide"><p className="eyebrow">Энциклопедия</p><h1>Ингредиенты косметики</h1><p>Понятный каталог компонентов: свойства, типы кожи, концентрации, совместимость и практические схемы использования.</p></div><SearchField value={q} onChange={setQ} placeholder="Найти ингредиент"/><div className="chip-row filter-chips">{chips.map(x=><button className={filter===x?'chip active':'chip'} key={x} onClick={()=>setFilter(x)}>{x}</button>)}</div><div className="alphabet">{'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ'.split('').map(x=><button key={x}>{x}</button>)}</div><div className="ingredient-grid catalogue">{list.map(i=><IngredientCard key={i.slug} ingredient={i}/>)}</div></main>}
+const INGREDIENT_PAGE_SIZE = 20;
+
+export function IngredientsPage() {
+  const [q, setQ] = useState('');
+  const [filter, setFilter] = useState('Все');
+  const [selectedLetter, setSelectedLetter] = useState('');
+  const [visibleCount, setVisibleCount] = useState(INGREDIENT_PAGE_SIZE);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const chips = ['Все', 'Увлажнение', 'Анти-эйдж', 'Акне', 'Пигментация', 'Чувствительная кожа'];
+
+  const alphabet = useMemo(
+    () => Array.from(new Set(ingredients.map((item) => item.name.trim().charAt(0).toUpperCase())))
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, 'ru')),
+    [],
+  );
+
+  const list = useMemo(() => {
+    const normalizedQuery = q.trim().toLowerCase();
+    const normalizedFilter = filter
+      .toLowerCase()
+      .replace('анти-эйдж', 'обновление')
+      .replace('акне', 'проблемная');
+
+    return ingredients.filter((item) => {
+      const matchesSearch = !normalizedQuery || item.name.toLowerCase().includes(normalizedQuery);
+      const matchesFilter = filter === 'Все'
+        || `${item.benefits.join(' ')} ${item.skin.join(' ')}`.toLowerCase().includes(normalizedFilter);
+      const matchesLetter = !selectedLetter
+        || item.name.trim().charAt(0).toUpperCase() === selectedLetter;
+
+      return matchesSearch && matchesFilter && matchesLetter;
+    });
+  }, [q, filter, selectedLetter]);
+
+  useEffect(() => {
+    setVisibleCount(INGREDIENT_PAGE_SIZE);
+  }, [q, filter, selectedLetter]);
+
+  useEffect(() => {
+    if (visibleCount >= list.length) return;
+
+    const target = loadMoreRef.current;
+    if (!target || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisibleCount((current) => Math.min(current + INGREDIENT_PAGE_SIZE, list.length));
+        }
+      },
+      { rootMargin: '400px 0px' },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [list.length, visibleCount]);
+
+  const visibleIngredients = list.slice(0, visibleCount);
+  const hasMore = visibleCount < list.length;
+
+  return (
+    <main className="section-wrap page-block">
+      <Breadcrumbs items={[{ label: 'Ингредиенты' }]} />
+
+      <div className="page-intro wide">
+        <p className="eyebrow">Энциклопедия</p>
+        <h1>Ингредиенты косметики</h1>
+        <p>Понятный каталог компонентов: свойства, типы кожи, концентрации, совместимость и практические схемы использования.</p>
+      </div>
+
+      <SearchField value={q} onChange={setQ} placeholder="Найти ингредиент" />
+
+      <div className="chip-row filter-chips">
+        {chips.map((item) => (
+          <button
+            className={filter === item ? 'chip active' : 'chip'}
+            key={item}
+            onClick={() => setFilter(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      <div className="alphabet" aria-label="Фильтр ингредиентов по первой букве">
+        <button
+          className={!selectedLetter ? 'active alphabet-all' : 'alphabet-all'}
+          onClick={() => setSelectedLetter('')}
+          type="button"
+        >
+          Все
+        </button>
+        {alphabet.map((letter) => (
+          <button
+            className={selectedLetter === letter ? 'active' : ''}
+            key={letter}
+            onClick={() => setSelectedLetter(letter)}
+            type="button"
+            aria-pressed={selectedLetter === letter}
+          >
+            {letter}
+          </button>
+        ))}
+      </div>
+
+      <div className="ingredient-results-meta">
+        {selectedLetter
+          ? `На «${selectedLetter}»: ${list.length}`
+          : `Найдено ингредиентов: ${list.length}`}
+      </div>
+
+      <div className="ingredient-grid catalogue">
+        {visibleIngredients.map((item) => (
+          <IngredientCard key={item.slug} ingredient={item} />
+        ))}
+      </div>
+
+      {list.length === 0 && (
+        <div className="ingredient-empty">
+          По выбранным параметрам ингредиенты не найдены.
+        </div>
+      )}
+
+      <div
+        ref={loadMoreRef}
+        className="ingredient-load-more"
+        aria-live="polite"
+      >
+        {hasMore
+          ? `Показано ${visibleIngredients.length} из ${list.length}. Прокрутите ниже для загрузки следующих ${Math.min(INGREDIENT_PAGE_SIZE, list.length - visibleIngredients.length)}.`
+          : list.length > INGREDIENT_PAGE_SIZE
+            ? `Все ${list.length} ингредиентов загружены.`
+            : null}
+      </div>
+    </main>
+  );
+}
 
 export function IngredientPage(){const {slug}=useParams();const item=ingredients.find(i=>i.slug===slug)||ingredients[1];return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Ингредиенты',to:'/ingredients'},{label:item.name}]}/><div className="ingredient-hero"><div><p className="eyebrow">Ингредиент</p><h1>{item.name}</h1><span className="latin">{item.latin}</span><p>{item.description}</p></div><div className="ingredient-facts"><div><span>Тип</span><strong>{item.kind}</strong></div><div><span>Для кожи</span><strong>{item.skin.join(' · ')}</strong></div><div><span>Основные свойства</span><strong>{item.benefits.join(' · ')}</strong></div></div></div><div className="article-layout ingredient-layout"><aside className="toc"><strong>На странице</strong>{['Что это','Как работает','Для чего используется','Кому подходит','Концентрация','Как использовать','Совместимость','Осторожность'].map((x,i)=><a href={`#i${i}`} key={x}>{x}</a>)}</aside><article className="article-content"><h2 id="i0">Что такое {item.name.toLowerCase()}</h2><p>{item.description} В косметике свойства ингредиента зависят от формулы целиком, концентрации и способа применения.</p><h2 id="i1">Как работает</h2><p>Компонент рассматривают как часть общей системы ухода. Эффект зависит от регулярности, переносимости и того, насколько базовый уход поддерживает защитный барьер кожи.</p><h2 id="i2">Для чего используется</h2><ul>{item.benefits.map(x=><li key={x}>{x}</li>)}</ul><h2 id="i3">Кому подходит</h2><p>Чаще всего ориентируются на задачи кожи, а не только на её тип. В карточке выше перечислены наиболее типичные сценарии применения.</p>
   {/*<AdSlot/>*/}
