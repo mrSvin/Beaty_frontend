@@ -21,10 +21,13 @@ for (const path of indexablePaths) {
   assert(html.includes(`<link rel="canonical" href="${seo.canonical}" />`), `Wrong canonical: ${path}`);
   assert(html.includes('<h1'), `Missing H1: ${path}`);
   assert(sitemap.includes(`<loc>${seo.canonical}</loc>`), `Missing from sitemap: ${path}`);
+  assert(path === '/' || !path.endsWith('/'), `Trailing slash in SEO route: ${path}`);
+  assert(seo.canonical === `https://simbeauty.ru${path}` || seo.canonical.endsWith(path), `Canonical/path disagreement: ${path}`);
 
   titles.add(title);
   descriptions.add(description);
 }
 
 assert(!sitemap.includes('/404'), '404 must not be in sitemap');
+assert(!/<loc>[^<]+\/\<\/loc>/.test(sitemap), 'Trailing slash in sitemap URL');
 console.log(`SEO checks passed: ${indexablePaths.length} unique prerendered pages`);
