@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { indexablePaths, getSeo } from '../.prerender/prerender.js';
 
-const titles = new Set();
-const descriptions = new Set();
+const titles = new Map();
+const descriptions = new Map();
 const sitemap = await readFile('dist/sitemap.xml', 'utf8');
 
 for (const path of indexablePaths) {
@@ -16,8 +16,8 @@ for (const path of indexablePaths) {
 
   assert(title, `Missing title: ${path}`);
   assert(description, `Missing description: ${path}`);
-  assert(!titles.has(title), `Repeated title: ${path}`);
-  assert(!descriptions.has(description), `Repeated description: ${path}`);
+  assert(!titles.has(title), `Repeated title: ${path} (already used by ${titles.get(title)})`);
+  assert(!descriptions.has(description), `Repeated description: ${path} (already used by ${descriptions.get(description)})`);
   assert(html.includes(`<link rel="canonical" href="${seo.canonical}" />`), `Wrong canonical: ${path}`);
   assert(html.includes('<h1'), `Missing H1: ${path}`);
   assert(sitemap.includes(`<loc>${seo.canonical}</loc>`), `Missing from sitemap: ${path}`);
@@ -37,8 +37,8 @@ for (const path of indexablePaths) {
   if (path === '/ingredients') {
     assert((html.match(/class="directory-letter"/g) ?? []).length >= 10, 'Ingredient directory is missing alphabet links');
   }
-  titles.add(title);
-  descriptions.add(description);
+  titles.set(title, path);
+  descriptions.set(description, path);
 }
 
 assert(!sitemap.includes('/404'), '404 must not be in sitemap');
