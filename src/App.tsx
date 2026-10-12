@@ -23,6 +23,7 @@ export function AppContent() {
         <Route path="/category/cosmetics/:topic" element={<CosmeticsTopicPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/ingredients" element={<IngredientsPage />} />
+        <Route path="/ingredients/page/:page" element={<IngredientsPage />} />
         <Route path="/ingredients/:slug" element={<IngredientPage />} />
         <Route path="/procedures" element={<ProceduresPage />} />
         <Route path="/procedures/:slug" element={<ProcedurePage />} />

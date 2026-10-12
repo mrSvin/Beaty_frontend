@@ -1762,6 +1762,7 @@ export const allIndexablePaths = [
   '/',
   '/articles',
   '/ingredients',
+  ...Array.from({length: Math.ceil(ingredients.length / 20) - 1}, (_, i) => `/ingredients/page/${i + 2}`),
   '/procedures',
   '/guides',
   '/tests',

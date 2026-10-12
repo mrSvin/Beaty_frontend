@@ -24,10 +24,28 @@ for (const path of indexablePaths) {
   assert(path === '/' || !path.endsWith('/'), `Trailing slash in SEO route: ${path}`);
   assert(seo.canonical === `https://simbeauty.ru${path}` || seo.canonical.endsWith(path), `Canonical/path disagreement: ${path}`);
 
+  // Ensure the new editorial and quiz pages have useful non-JS HTML.
+  if (path.startsWith('/articles/')) {
+    assert((html.match(/<h2/g) ?? []).length >= 5, `Article lacks sections: ${path}`);
+    assert((html.match(/<p/g) ?? []).length >= 10, `Article is thin: ${path}`);
+    assert(html.includes('article-faq'), `Missing article FAQ: ${path}`);
+  }
+  if (path.startsWith('/tests/')) {
+    assert(html.includes('О тесте и его возможностях'), `Missing SSR test guide: ${path}`);
+    assert(html.includes('Ограничения методики'), `Missing methodology caveat: ${path}`);
+  }
+  if (path === '/ingredients') {
+    assert((html.match(/class="directory-letter"/g) ?? []).length >= 10, 'Ingredient directory is missing alphabet links');
+  }
   titles.add(title);
   descriptions.add(description);
 }
 
 assert(!sitemap.includes('/404'), '404 must not be in sitemap');
-assert(!/<loc>[^<]+\/\<\/loc>/.test(sitemap), 'Trailing slash in sitemap URL');
+// The home page is legitimately ${ORIGIN}/; inner pages must not end with '/'.
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+for (const url of sitemapUrls) {
+  const pathname = new URL(url).pathname;
+  assert(pathname === '/' || !pathname.endsWith('/'), `Trailing slash in sitemap: ${url}`);
+}
 console.log(`SEO checks passed: ${indexablePaths.length} unique prerendered pages`);
