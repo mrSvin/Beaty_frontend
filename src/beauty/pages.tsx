@@ -9,7 +9,7 @@ import {
   Sparkles,
   Star
 } from 'lucide-react';
-import {Link, useParams, useSearchParams} from 'react-router-dom';
+import {Link, useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {
   AdSlot,
   ArticleCard,
@@ -32,6 +32,8 @@ import {ingredients} from "@/beauty/contentIngredient";
 import {tests} from "@/beauty/contentTests";
 import {articleEditorials} from './articleEditorials';
 import {testEditorials} from './testEditorials';
+import {matchesSearchText, searchSite, type SearchItem} from './search';
+import {TopicDeepDive} from './topicDeepDives';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -54,6 +56,9 @@ export function HomePage() {
   const [skinType, setSkinType] = useState('');
   const [problem, setProblem] = useState('');
   const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+  const suggestions = useMemo(() => searchSite(query, 6), [query]);
+  const searchUrl = `/search?q=${encodeURIComponent(query.trim())}`;
 
   return (
       <main>
@@ -63,12 +68,16 @@ export function HomePage() {
             <h1>Всё об уходе, косметике и красоте</h1>
             <p>Разбираем составы, процедуры и уход без перегруза обещаниями. Понятные статьи, большие гайды и инструменты, которые помогают ориентироваться в beauty-теме.</p>
             <div className="hero-search-wrap">
-              <SearchField value={query} onChange={setQuery} />
-              {query && (
-                  <div className="hero-suggestions">
-                    {[...articles.map(a => ({title:a.title,to:`/articles/${a.slug}`})), ...ingredients.map(i => ({title:i.name,to:`/ingredients/${i.slug}`}))]
-                        .filter(x => x.title.toLowerCase().includes(query.toLowerCase())).slice(0,5).map(x => <Link key={x.to} to={x.to}>{x.title}<ArrowRight size={15}/></Link>)}
-                  </div>
+              <form className="hero-search-form" role="search" onSubmit={(event) => {event.preventDefault(); navigate(query.trim() ? searchUrl : '/search');}}>
+                <SearchField value={query} onChange={setQuery} />
+                <button className="hero-search-submit" type="submit">Найти <ArrowRight size={15}/></button>
+              </form>
+              {query.trim().length >= 2 && (
+                <div className="hero-suggestions" aria-label="Подсказки поиска">
+                  {suggestions.map(item => <Link key={item.id} to={item.href}><span><small>{item.label}</small>{item.title}</span><ArrowRight size={15}/></Link>)}
+                  {suggestions.length === 0 && <p className="search-suggestions-empty">В подсказках нет совпадений. Попробуйте другое слово.</p>}
+                  <Link className="search-all-link" to={searchUrl}>Показать все результаты <ArrowRight size={15}/></Link>
+                </div>
               )}
             </div>
             <div className="search-prompts"><span>Попробуйте:</span><Link to="/ingredients/retinol">Ретинол</Link><Link to="/articles/kak-vybrat-spf">Как выбрать SPF</Link><Link to="/category/skin/zhirnaya-kozha">Уход за жирной кожей</Link></div>
@@ -950,6 +959,7 @@ function MakeupTopicEditorial({ slug }: { slug: string }) {
     <h2>{data.frequencyTitle}</h2>
     <p>{data.frequencyText}</p>
 
+    <TopicDeepDive kind="makeup" slug={slug}/>
     <h2>Частые вопросы</h2>
     <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
   </section>;
@@ -1008,6 +1018,7 @@ function ManicureTopicEditorial({ slug }: { slug: string }) {
     <div className="care-ingredient-notes">{data.tips.map(([title, text]) => <div key={title}><strong>{title}</strong><p>{text}</p></div>)}</div>
     <h2>{data.frequencyTitle}</h2>
     <p>{data.frequencyText}</p>
+    <TopicDeepDive kind="manicure" slug={slug}/>
     <h2>Частые вопросы</h2>
     <div className="faq">{data.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
   </section>;
@@ -1129,10 +1140,12 @@ export function CosmeticsTopicPage() {
 
 export function ArticlesPage() {
   const [q,setQ]=useState(''); const [cat,setCat]=useState('Все');
-  const list=articles.filter(a=>(cat==='Все'||a.category===cat)&&a.title.toLowerCase().includes(q.toLowerCase()));
+  const matchingSlugs = q.trim() ? new Set(searchSite(q).filter(item => item.kind === 'article').map(item => item.href)) : null;
+  const list=articles.filter(a=>(cat==='Все'||a.category===cat)&&(!matchingSlugs || matchingSlugs.has(`/articles/${a.slug}`)));
   return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Все статьи'}]}/><div className="page-intro"><p className="eyebrow">Библиотека</p><h1>Все статьи</h1><p>Материалы BeautyGuide об уходе, косметике, макияже, волосах, ногтях и beauty-процедурах.</p></div>
     <div className="filter-bar"><SearchField value={q} onChange={setQ} placeholder="Поиск по статьям"/><select value={cat} onChange={e=>setCat(e.target.value)}><option>Все</option>{[...new Set(articles.map(a=>a.category))].map(x=><option key={x}>{x}</option>)}</select><span className="article-list-count">Материалов: {list.length}</span></div>
     <div className="articles-grid">{list.map(a=><ArticleCard key={a.slug} article={a}/>)}</div>
+    {list.length === 0 && <p className="search-no-results">По этому запросу статей нет. Попробуйте изменить слова или категорию.</p>}
   </main>
 }
 
@@ -1218,7 +1231,7 @@ export function IngredientsPage() {
     const normalizedQuery = q.trim().toLowerCase();
     const normalizedFilter = filter.toLowerCase().replace('анти-эйдж','обновление').replace('акне','проблемная');
     return ingredients.filter(item => (
-      (!normalizedQuery || item.name.toLowerCase().includes(normalizedQuery)) &&
+      (!normalizedQuery || matchesSearchText(normalizedQuery, `${item.name} ${item.description} ${item.benefits.join(' ')} ${item.skin.join(' ')}`)) &&
       (filter === 'Все' || `${item.benefits.join(' ')} ${item.skin.join(' ')}`.toLowerCase().includes(normalizedFilter)) &&
       (!selectedLetter || item.name.trim().charAt(0).toUpperCase() === selectedLetter)
     ));
@@ -1234,11 +1247,11 @@ export function IngredientsPage() {
       <h1>{page===1?'Ингредиенты косметики':`Ингредиенты косметики — страница ${page}`}</h1>
       <p>Понятный каталог компонентов: свойства, типы кожи, концентрации, совместимость и практические схемы использования. Всего {ingredients.length} ингредиентов; страницы каталога открываются обычными ссылками.</p>
     </div>
-    <SearchField value={q} onChange={setQ} placeholder="Найти ингредиент"/>
+    <SearchField value={q} onChange={value => {setQ(value); if (value.trim()) setSelectedLetter('');}} placeholder="Найти ингредиент"/>
     <div className="chip-row filter-chips">{chips.map(item=><button key={item} type="button" className={filter===item?'chip active':'chip'} onClick={()=>setFilter(item)}>{item}</button>)}</div>
     <div className="alphabet" aria-label="Фильтр ингредиентов по первой букве">
       <button className={!selectedLetter?'active alphabet-all':'alphabet-all'} onClick={()=>setSelectedLetter('')} type="button">Все</button>
-      {alphabet.map(letter=><button key={letter} className={selectedLetter===letter?'active':''} onClick={()=>setSelectedLetter(letter)} type="button" aria-pressed={selectedLetter===letter}>{letter}</button>)}
+      {alphabet.map(letter=><button key={letter} className={selectedLetter===letter?'active':''} onClick={()=>{setSelectedLetter(letter);setQ('');}} type="button" aria-pressed={selectedLetter===letter}>{letter}</button>)}
     </div>
     <div className="ingredient-results-meta">{isFiltered?`Найдено ингредиентов: ${filtered.length}`:`Страница ${page} из ${pageCount} · показано ${pageItems.length} из ${ingredients.length}`}</div>
     <div className="ingredient-grid catalogue">{pageItems.map(item=><IngredientCard ingredient={item} key={item.slug}/>)}</div>
@@ -1580,6 +1593,52 @@ export function TestPage(){
   </main>;
 }
 
-export function SearchPage(){const [params]=useSearchParams();const [q,setQ]=useState(params.get('q')||'');const lower=q.toLowerCase();const resultArticles=useMemo(()=>articles.filter(a=>!q||`${a.title} ${a.excerpt}`.toLowerCase().includes(lower)),[q,lower]);const resultIng=useMemo(()=>ingredients.filter(i=>!q||`${i.name} ${i.description}`.toLowerCase().includes(lower)),[q,lower]);return <main className="section-wrap page-block"><Breadcrumbs items={[{label:'Поиск'}]}/><div className="page-intro"><p className="eyebrow">Поиск по BeautyGuide</p><h1>Что вы хотите узнать?</h1></div><SearchField value={q} onChange={setQ} placeholder="Например, ретинол"/><div className="search-results"><section><div className="search-section-title"><h2>Статьи</h2><span>{resultArticles.length}</span></div>{resultArticles.slice(0,5).map(a=><Link to={`/articles/${a.slug}`} key={a.slug}><span>{a.category}</span><div><h3>{a.title}</h3><p>{a.excerpt}</p></div><ArrowRight/></Link>)}</section><section><div className="search-section-title"><h2>Ингредиенты</h2><span>{resultIng.length}</span></div>{resultIng.slice(0,5).map(i=><Link to={`/ingredients/${i.slug}`} key={i.slug}><span>Ингредиент</span><div><h3>{i.name}</h3><p>{i.description}</p></div><ArrowRight/></Link>)}</section></div></main>}
+const SEARCH_GROUPS: {label: string; kinds: SearchItem['kind'][]}[] = [
+  {label:'Статьи',kinds:['article']},
+  {label:'Темы и инструкции',kinds:['topic']},
+  {label:'Ингредиенты',kinds:['ingredient']},
+  {label:'Гайды',kinds:['guide']},
+  {label:'Процедуры',kinds:['procedure']},
+  {label:'Тесты',kinds:['test']},
+];
+
+export function SearchPage() {
+  const [params, setParams] = useSearchParams();
+  const q = params.get('q') || '';
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const results = useMemo(() => searchSite(q), [q]);
+  const isQuery = q.trim().length >= 2;
+  useEffect(() => setExpanded([]), [q]);
+  return <main className="section-wrap page-block">
+    <Breadcrumbs items={[{label:'Поиск'}]}/>
+    <div className="page-intro"><p className="eyebrow">Поиск по BeautyGuide</p><h1>Что вы хотите узнать?</h1>
+      <p>Ищем по темам ухода, статьям, ингредиентам, процедурам, гайдам и тестам.</p>
+    </div>
+    <div className="search-page-form" role="search">
+      <SearchField value={q} onChange={value => setParams(value ? {q:value} : {}, {replace:true})} placeholder="Например, крем для сухой кожи"/>
+    </div>
+    {!isQuery ? <div className="search-intro">
+      <p>Введите хотя бы два символа или выберите популярный запрос:</p>
+      <div className="tag-row">{['Ретинол','SPF','Акне','Тушь для ресниц','Короткие ногти','Увлажнение'].map(term => <Link key={term} to={`/search?q=${encodeURIComponent(term)}`}>{term}</Link>)}</div>
+    </div> : <>
+      <p className="search-total" aria-live="polite">{results.length ? `Найдено материалов: ${results.length}` : 'По вашему запросу ничего не найдено.'}</p>
+      {results.length === 0 && <div className="search-empty-state"><h2>Попробуйте другой запрос</h2><p>Проверьте написание, сократите фразу до ключевого слова или используйте название средства, например «крем», «волосы», «маникюр».</p></div>}
+      <div className="search-results">
+        {SEARCH_GROUPS.map(group => {
+          const items = results.filter(item => group.kinds.includes(item.kind));
+          if (!items.length) return null;
+          const showAll = expanded.includes(group.label);
+          return <section key={group.label}>
+            <div className="search-section-title"><h2>{group.label}</h2><span>{items.length}</span></div>
+            {(showAll ? items : items.slice(0, 6)).map(item => <Link to={item.href} key={item.id}>
+              <span>{item.label}</span><div><h3>{item.title}</h3><p>{item.description}</p></div><ArrowRight aria-hidden="true"/>
+            </Link>)}
+            {items.length > 6 && <button className="search-more-btn" type="button" onClick={() => setExpanded(current => showAll ? current.filter(value => value !== group.label) : [...current,group.label])}>{showAll ? 'Свернуть' : `Показать ещё ${items.length - 6}`} <ArrowRight size={14}/></button>}
+          </section>;
+        })}
+      </div>
+    </>}
+  </main>;
+}
 
 export function NotFoundPage(){return <main className="section-wrap not-found"><div><span>404</span><h1>Похоже, эта страница исчезла</h1><p>Попробуйте поиск или вернитесь в один из популярных разделов BeautyGuide.</p><div className="not-found-search"><Search size={19}/><Link to="/search">Найти материал</Link></div><div className="tag-row"><Link to="/category/skin">Уход</Link><Link to="/ingredients">Ингредиенты</Link><Link to="/guides">Гайды</Link><Link to="/tests">Тесты</Link></div></div></main>}

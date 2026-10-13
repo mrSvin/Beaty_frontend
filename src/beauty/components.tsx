@@ -242,7 +242,7 @@ export function InfoBox({ title, children, tone = 'neutral' }: { title: string; 
 }
 
 export function SearchField({ value, onChange, placeholder = 'Что вы хотите узнать?' }: { value: string; onChange: (value: string) => void; placeholder?: string }) {
-  return <label className="search-field"><Search size={20} /><input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} /></label>;
+  return <div className="search-field"><Search size={20} aria-hidden="true"/><input type="search" name="q" aria-label={placeholder} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} autoComplete="off" />{value.length > 0 && <button type="button" className="search-clear" onClick={() => onChange('')} aria-label="Очистить поисковую строку"><X size={16}/></button>}</div>;
 }
 
 export function Badge({ children }: { children: ReactNode }) { return <span className="badge"><Sparkles size={13} />{children}</span>; }
