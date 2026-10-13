@@ -1,4 +1,5 @@
 import {newArticleEditorials} from './newArticleEditorials';
+import {additionalArticleEditorials} from './additionalArticleEditorials';
 /** Author-written editorial copy for each article; rendered server-side by ArticlePage. */
 export type ArticleSection = {
   title: string;
@@ -124,4 +125,5 @@ export const articleEditorials: Record<string, Editorial> = {
     ingredientSlugs:[],relatedArticleSlugs:['komponenty-dlya-uvlazhneniya','ochishchenie-kozhi'],topicLinks:[{label:'Уход за кутикулой',url:'/category/manicure/uhod-za-kutikuloy'},{label:'Домашний маникюр',url:'/category/manicure/domashniy-manikyur'}]
   },
   ...newArticleEditorials,
+  ...additionalArticleEditorials,
 };
