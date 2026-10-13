@@ -1,3 +1,4 @@
+import {newStyleTests} from './newStyleTests';
 export type TestAnswer = {
   value: string;
   label: string;
@@ -1495,6 +1496,7 @@ const scalpTypeResults: Record<string, TestResult> = {
 };
 
 export const tests: BeautyTest[] = [
+  ...newStyleTests,
   {
     slug: 'skin-type',
     title: 'Определить тип кожи',
