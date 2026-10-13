@@ -27,6 +27,7 @@ import {hairEditorials} from './hairEditorials';
 import {makeupEditorials} from './makeupEditorials';
 import {manicureEditorials} from './manicureEditorials';
 import {cosmeticsEditorials} from './cosmeticsEditorials';
+import {cosmeticsExpanded} from './cosmeticsExpanded';
 import {ingredients} from "@/beauty/contentIngredient";
 import {tests} from "@/beauty/contentTests";
 import {articleEditorials} from './articleEditorials';
@@ -1049,6 +1050,29 @@ export function ManicureTopicPage() {
 }
 
 function CosmeticsTopicEditorial({ slug }: { slug: string }) {
+  const expanded = cosmeticsExpanded[slug];
+  if (expanded) return <section className="care-topic-copy article-content hair-topic-copy">
+    <p className="lead">{expanded.lead}</p>
+    <InfoBox title="Главное по теме" tone="good"><ul>{expanded.highlights.map((point) => <li key={point}>{point}</li>)}</ul></InfoBox>
+    {expanded.sections.map((section) => <section key={section.title}>
+      <h2>{section.title}</h2>
+      {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+      {section.table && <div className="article-table-scroll"><table className="article-data-table">
+        <thead><tr>{section.table.headings.map((heading) => <th key={heading} scope="col">{heading}</th>)}</tr></thead>
+        <tbody>{section.table.rows.map(([label, description]) => <tr key={label}><th scope="row">{label}</th><td>{description}</td></tr>)}</tbody>
+      </table></div>}
+      {section.bullets && <ul>{section.bullets.map((point) => <li key={point}>{point}</li>)}</ul>}
+      {section.note && <InfoBox title="Обратите внимание" tone="warning"><p>{section.note}</p></InfoBox>}
+    </section>)}
+    <h2>Частые вопросы</h2>
+    <div className="faq">{expanded.faq.map(([question, answer]) => <details key={question}><summary>{question}<span>+</span></summary><p>{answer}</p></details>)}</div>
+    {expanded.sources && expanded.sources.length > 0 && <section>
+      <h2>Источники и рекомендации</h2>
+      <p>Для проверки практических рекомендаций использованы материалы профильных организаций. В отдельных странах правила маркировки косметики могут различаться.</p>
+      <ul>{expanded.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul>
+    </section>}
+  </section>;
+
   const data = cosmeticsEditorials[slug];
   if (!data) return null;
 
