@@ -1554,9 +1554,11 @@ function TestSeoContent({slug}: {slug: string}) {
     <InfoBox title="Ограничения методики" tone="warning"><p>{editorial.caveat}</p></InfoBox>
     <h2>Полезные материалы по теме</h2><ul>{editorial.related.map(item=><li key={item.url}><Link to={item.url}>{item.title}</Link></li>)}</ul>
     <h2>Частые вопросы</h2>
-    <div className="faq"><details><summary>Можно ли доверять результату теста?<span>+</span></summary><p>{editorial.interpretation}</p></details>
-    <details><summary>Нужно ли готовиться к прохождению?<span>+</span></summary><p>Нет. Выберите ответы, которые описывают ваши обычные ощущения и привычки, а не ситуацию одного необычного дня.</p></details>
-    <details><summary>Заменяет ли тест консультацию специалиста?<span>+</span></summary><p>{editorial.caveat}</p></details></div>
+    <div className="faq">{(editorial.faq ?? [
+      {question: 'Можно ли доверять результату теста?', answer: editorial.interpretation},
+      {question: 'Нужно ли готовиться к прохождению?', answer: 'Нет. Выберите ответы, которые описывают ваши обычные ощущения и привычки, а не ситуацию одного необычного дня.'},
+      {question: 'Заменяет ли тест консультацию специалиста?', answer: editorial.caveat},
+    ]).map(item => <details key={item.question}><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}</div>
   </section>;
 }
 
