@@ -1,3 +1,4 @@
+import {newArticleEditorials} from './newArticleEditorials';
 /** Author-written editorial copy for each article; rendered server-side by ArticlePage. */
 export type ArticleSection = {
   title: string;
@@ -14,6 +15,7 @@ export type Editorial = {
   ingredientSlugs: string[];
   relatedArticleSlugs: string[];
   topicLinks: { label: string; url: string }[];
+  sources?: { label: string; url: string }[];
 };
 
 export const articleEditorials: Record<string, Editorial> = {
@@ -120,5 +122,6 @@ export const articleEditorials: Record<string, Editorial> = {
     ],
     faq:[{question:'Нужно ли срезать кутикулу дома?',answer:'Необязательно. Для большинства достаточно мягкого ухода без травмирования живой кожи.'},{question:'Масло лучше крема?',answer:'Масло может смягчать сухие участки, но регулярный крем для рук тоже помогает поддерживать комфорт.'},{question:'Что делать, если кутикула воспалена?',answer:'Не продолжать обрезание и обработку; при боли, отёке или гное обратиться к врачу.'}],
     ingredientSlugs:[],relatedArticleSlugs:['komponenty-dlya-uvlazhneniya','ochishchenie-kozhi'],topicLinks:[{label:'Уход за кутикулой',url:'/category/manicure/uhod-za-kutikuloy'},{label:'Домашний маникюр',url:'/category/manicure/domashniy-manikyur'}]
-  }
+  },
+  ...newArticleEditorials,
 };

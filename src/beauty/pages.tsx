@@ -1193,6 +1193,7 @@ export function ArticlePage() {
         </section>
         {relatedIngredients.length > 0 && <section className="article-subject-links"><h2>Ингредиенты по теме</h2><div className="tag-row">{relatedIngredients.map(item=><Link key={item.slug} to={`/ingredients/${item.slug}`}>{item.name}</Link>)}</div></section>}
         <section className="article-subject-links"><h2>Полезные материалы</h2><ul>{editorial.topicLinks.map(item=><li key={item.url}><Link to={item.url}>{item.label}</Link></li>)}</ul></section>
+        {editorial.sources && editorial.sources.length > 0 && <section className="article-subject-links" aria-label="Источники"><h2>Источники и рекомендации</h2><ul>{editorial.sources.map(source=><li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a></li>)}</ul></section>}
       </article>
       <aside className="article-aside"><div className="sidebar-box"><h3>Читайте также</h3>
         {related.slice(0,3).map(item=><Link to={`/articles/${item.slug}`} key={item.slug}>{item.title}<ChevronRight size={14}/></Link>)}
