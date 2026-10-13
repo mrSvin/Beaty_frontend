@@ -1,5 +1,6 @@
 import {newArticleEditorials} from './newArticleEditorials';
 import {additionalArticleEditorials} from './additionalArticleEditorials';
+import {searchFocusedArticleEditorials} from './searchFocusedArticleEditorials';
 /** Author-written editorial copy for each article; rendered server-side by ArticlePage. */
 export type ArticleSection = {
   title: string;
@@ -126,4 +127,5 @@ export const articleEditorials: Record<string, Editorial> = {
   },
   ...newArticleEditorials,
   ...additionalArticleEditorials,
+  ...searchFocusedArticleEditorials,
 };
