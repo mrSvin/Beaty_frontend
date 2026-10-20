@@ -659,3 +659,10 @@ button { cursor: pointer; }
   .hero-search-submit { width: 100%; padding: 13px 16px; }
   .hero-suggestions { top: calc(100% + 8px); }
 }
+
+/* Редакционные справки по ингредиентам: ссылки и оговорки должны быть доступны в HTML. */
+.ingredient-inci-line, .ingredient-evidence-note { margin: 16px 0; padding: 14px 18px; background: var(--surface-2, #faf8f6); border-left: 3px solid var(--rose-dark, #a46569); border-radius: 8px; }
+.ingredient-references a { color: var(--rose-dark, #a46569); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.ingredient-related-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 32px; }
+.ingredient-related-links a { padding: 9px 13px; border-radius: 999px; background: var(--surface-2, #faf8f6); border: 1px solid var(--line); color: var(--rose-dark, #a46569); font-size: 13px; text-decoration: none; }
+.ingredient-related-links a:hover, .ingredient-related-links a:focus-visible { text-decoration: underline; }

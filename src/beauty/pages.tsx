@@ -35,6 +35,7 @@ import {testEditorials} from './testEditorials';
 import {matchesSearchText, searchSite, type SearchItem} from './search';
 import {TopicDeepDive} from './topicDeepDives';
 import {PriorityPageEditorial} from './priorityPageEditorials';
+import {ingredientEvidence, ingredientSources} from './ingredientEvidence';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -1282,6 +1283,8 @@ export function IngredientPage() {
   const {slug} = useParams();
   const item = ingredients.find((ingredient) => ingredient.slug === slug);
   if (!item) return <NotFoundPage/>;
+  const details = ingredientEvidence[item.slug];
+  const relatedEvidenceItems = (details?.related ?? []).map(id => ingredients.find(candidate => candidate.slug === id)).filter((candidate): candidate is typeof ingredients[number] => Boolean(candidate) && candidate.slug !== item.slug);
   const compatibilityFaq = item.faq.find(({question}) =>
       question.toLowerCase().includes('с чем') || question.toLowerCase().includes('сочет')
   );
@@ -1320,12 +1323,14 @@ export function IngredientPage() {
           'Совместимость',
           'Осторожность',
           'Частые вопросы',
+          ...(details ? ['INCI и роль в составе', 'Что важно о концентрации', 'Ограничения и доказательность', 'Источники и связанные компоненты'] : []),
         ].map((label, index) => <a href={`#i${index}`} key={label}>{label}</a>)}
       </aside>
 
       <article className="article-content">
         <h2 id="i0">Что такое {item.name.toLowerCase()}</h2>
         <p>{item.description}</p>
+        <p className="ingredient-inci-line"><strong>Обозначение INCI:</strong> {details?.inci ?? item.latin}. {(!details && ['aha', 'bha', 'pha', 'peptides', 'ceramides', 'fatty-acids', 'amino-acids'].includes(item.slug)) && 'Это группа веществ: точные INCI отдельных компонентов смотрите в составе конкретного средства.'}</p>
 
         <h2 id="i1">Как работает</h2>
         <p>{item.howItWorks}</p>
@@ -1371,6 +1376,29 @@ export function IngredientPage() {
 
         <h2 id="i8">Частые вопросы</h2>
         <IngredientFAQ items={item.faq}/>
+
+        {details && <>
+          <h2 id="i9">INCI и роль ингредиента в формуле</h2>
+          <p><strong>INCI:</strong> {details.inci}</p>
+          <p>{details.formulaRole}</p>
+
+          <h2 id="i10">Какие концентрации встречаются и что они значат</h2>
+          <p>{details.typicalUse}</p>
+          <p className="ingredient-evidence-note">Указанные диапазоны, если они приведены, описывают встречающиеся рецептуры или конкретные нормативы. Они не являются индивидуальным назначением и не гарантируют эффективность либо безопасность любой формулы.</p>
+
+          <h2 id="i11">Ограничения, возможные реакции и уровень подтверждения</h2>
+          <p>{details.caution}</p>
+          <p><strong>Как трактовать доказательства:</strong> {details.evidence}</p>
+
+          <h2 id="i12">Источники и связанные ингредиенты</h2>
+          <p className="ingredient-evidence-note">Справочники INCI описывают номенклатуру и функции, но само наличие вещества в базе не означает одобрение любой концентрации. Нормативы зависят от категории товара и страны.</p>
+          <ul className="ingredient-references">
+            {details.sources.map(key => <li key={key}><a href={ingredientSources[key].url} target="_blank" rel="noopener noreferrer">{ingredientSources[key].title}</a></li>)}
+          </ul>
+          {relatedEvidenceItems.length > 0 && <nav className="ingredient-related-links" aria-label="Связанные компоненты">
+            {relatedEvidenceItems.map(candidate => <Link key={candidate.slug} to={`/ingredients/${candidate.slug}`}>{candidate.name}</Link>)}
+          </nav>}
+        </>}
       </article>
     </div>
 
