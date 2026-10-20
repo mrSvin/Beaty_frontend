@@ -1,14 +1,27 @@
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import SEO from './components/SEO';
 import YandexMetrika from './components/YandexMetrika';
 import { Layout } from './beauty/components';
 import { ArticlePage, ArticlesPage, CareTopicPage, CategoryPage, HairTopicPage, MakeupTopicPage, ManicureTopicPage, CosmeticsTopicPage, GuidePage, GuidesPage, HomePage, IngredientPage, IngredientsPage, NotFoundPage, ProcedurePage, ProceduresPage, SearchPage, TestPage, TestsPage } from './beauty/pages';
 
+function CanonicalPath() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const canonical = location.pathname.replace(/\/+$/, '') || '/';
+    if (canonical !== location.pathname) {
+      navigate({pathname: canonical, search: location.search, hash: location.hash}, {replace: true});
+    }
+  }, [location.pathname, location.search, location.hash, navigate]);
+  return null;
+}
+
 export function AppContent() {
   const location = useLocation();
   useEffect(() => { if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); }, [location.pathname]);
   return <>
+    <CanonicalPath />
     <SEO />
     <YandexMetrika />
     <Layout>

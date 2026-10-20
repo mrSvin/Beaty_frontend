@@ -34,6 +34,7 @@ import {articleEditorials} from './articleEditorials';
 import {testEditorials} from './testEditorials';
 import {matchesSearchText, searchSite, type SearchItem} from './search';
 import {TopicDeepDive} from './topicDeepDives';
+import {PriorityPageEditorial} from './priorityPageEditorials';
 
 const skinTypes = ['Сухая', 'Жирная', 'Комбинированная', 'Чувствительная', 'Проблемная'];
 const skinProblems = ['Акне', 'Пигментация', 'Морщины', 'Увлажнение', 'Восстановление барьера', 'Расширенные поры'];
@@ -862,6 +863,7 @@ export function CareTopicPage() {
     </div>
 
     <SkinTypeEditorial slug={item.slug}/>
+    <PriorityPageEditorial path={`/category/skin/${item.slug}`}/>
 
     {item.slug === 'akne' && <InfoBox title="Когда лучше обратиться к специалисту" tone="warning"><p>Если высыпания выраженные, болезненные, оставляют заметные следы или долго не меняются, косметический уход не стоит рассматривать как замену консультации дерматолога.</p></InfoBox>}
 
@@ -933,6 +935,7 @@ export function HairTopicPage() {
     </section>
 
     <HairTopicEditorial slug={item.slug}/>
+    <PriorityPageEditorial path={`/category/hair/${item.slug}`}/>
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить уход или подобрать конкретный формат средства."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/hair/${related.slug}`} key={related.slug}><span>{hairGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
@@ -998,6 +1001,7 @@ export function MakeupTopicPage() {
     </section>
 
     <MakeupTopicEditorial slug={item.slug}/>
+    <PriorityPageEditorial path={`/category/makeup/${item.slug}`}/>
 
     <section className="care-topic-section"><SectionHeading eyebrow="Навигация" title="Смежные темы" text="Перейдите к соседнему материалу, если хотите уточнить технику, отдельную зону или способ фиксации."/><div className="care-related-grid">{relatedTopics.map((related)=><Link to={`/category/makeup/${related.slug}`} key={related.slug}><span>{makeupGroups.find((entry)=>entry.id===related.group)?.title}</span><h3>{related.name}</h3><p>{related.description}</p><ArrowRight size={16}/></Link>)}</div></section>
   </main>;
@@ -1363,6 +1367,8 @@ export function IngredientPage() {
           </p>
         </InfoBox>
 
+        <PriorityPageEditorial path={`/ingredients/${item.slug}`}/>
+
         <h2 id="i8">Частые вопросы</h2>
         <IngredientFAQ items={item.faq}/>
       </article>
@@ -1443,6 +1449,8 @@ export function ProcedurePage(){
         {section.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
         {section.bullets && <ul>{section.bullets.map(item=><li key={item}>{item}</li>)}</ul>}
       </section>)}
+
+      <PriorityPageEditorial path={`/procedures/${p.slug}`}/>
 
       <h2>Как подготовиться</h2>
       <div className="checklist"><h3>Чек-лист перед визитом</h3>{p.preparation.map(item=><label key={item}><input type="checkbox"/>{item}</label>)}</div>

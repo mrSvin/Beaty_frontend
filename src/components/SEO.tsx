@@ -11,8 +11,62 @@ const HOME_DESCRIPTION = 'BeautyGuide — информационный порт�
 type SeoData = { title: string; description: string; keywords?: string; robots: string };
 const normalizePath = (pathname: string) => pathname.replace(/\/+$/, '') || '/';
 
+// Query-specific metadata for the pages with the strongest Search Console visibility.
+// Titles are unique; the value proposition is matched by visible HTML content.
+const prioritySeo: Record<string, {title: string; description: string}> = {
+  '/category/hair/pushistost-volos': {
+    title: 'Пушистость волос: причины и как убрать пушение | BeautyGuide',
+    description: 'Почему волосы пушатся после мытья, от влажности или горячей укладки. Таблица причин, уход по шагам, ошибки и несмываемые средства.',
+  },
+  '/category/makeup/bronzer-haylayter': {
+    title: 'Бронзер и хайлайтер: разница и зоны нанесения | BeautyGuide',
+    description: 'Чем бронзер отличается от хайлайтера и контура: сравнение, куда наносить средства, как растушевать и избежать пятен.',
+  },
+  '/category/makeup/fiksaciya-makiyazha': {
+    title: 'Как закрепить макияж: пудра или фиксатор | BeautyGuide',
+    description: 'Чем фиксировать тон: пудра, спрей, стойкая формула. Таблица под тип кожи, тест стойкости и безопасное обновление макияжа.',
+  },
+  '/category/makeup/tonalnaya-osnova': {
+    title: 'Как выбрать тональную основу по оттенку и финишу | BeautyGuide',
+    description: 'Тональная основа без маски: как выбрать оттенок и подтон, проверить финиш, наносить тонкими слоями и сочетать с SPF.',
+  },
+  '/category/makeup/brovi': {
+    title: 'Макияж бровей: карандаш, тени, гель и техника | BeautyGuide',
+    description: 'Чем заполнить пробелы и уложить брови: сравнение карандаша, теней и геля, пошаговая техника, ошибки и проверка симметрии.',
+  },
+  '/category/skin/kombinirovannaya-kozha': {
+    title: 'Комбинированная кожа: уход за Т-зоной и щеками | BeautyGuide',
+    description: 'Как ухаживать за комбинированной кожей: таблица проблем Т-зоны и щёк, выбор крема, мягкое очищение и локальный уход.',
+  },
+  '/ingredients/dimethicone': {
+    title: 'Диметикон в косметике: роль силикона и применение | BeautyGuide',
+    description: 'Зачем нужен Dimethicone в креме, праймере и кондиционере: факты о гладкости, текстуре, совместимости и переносимости.',
+  },
+  '/ingredients/gluconolactone': {
+    title: 'Глюконолактон в косметике: PHA, свойства и уход | BeautyGuide',
+    description: 'Что делает Gluconolactone, чем PHA отличаются от AHA/BHA, как вводить средство и когда нужно избегать раздражения.',
+  },
+  '/ingredients/taurine': {
+    title: 'Таурин в косметике: свойства и ограничения | BeautyGuide',
+    description: 'Для чего в косметику добавляют Taurine: как оценивать обещания, смотреть на состав и безопасно пробовать новое средство.',
+  },
+  '/ingredients/behenyl-alcohol': {
+    title: 'Бегениловый спирт: зачем он в креме и бальзаме | BeautyGuide',
+    description: 'Behenyl Alcohol в INCI: отличие жирных спиртов от этанола, роль в текстуре крема и что учитывать чувствительной коже.',
+  },
+  '/procedures/paraffin-hand-treatment': {
+    title: 'Парафинотерапия рук: результат и безопасность | BeautyGuide',
+    description: 'Что даёт парафинотерапия рук, кому стоит отложить процедуру, риск ожога, подготовка и вопросы мастеру.',
+  },
+  '/procedures/vacuum-hydropeeling': {
+    title: 'Вакуумный гидропилинг: как проходит и риски | BeautyGuide',
+    description: 'Что уточнить перед вакуумным гидропилингом: растворы, сила вакуума, противопоказания, уход после и ожидаемый эффект.',
+  },
+};
+
 export function getSeoData(pathname: string): SeoData {
   const path = normalizePath(pathname);
+  if (prioritySeo[path]) return {...prioritySeo[path], robots: 'index, follow'};
   if (path === '/') return { title: 'Красота, уход и косметика — гайды и энциклопедия | BeautyGuide', description: HOME_DESCRIPTION, keywords: 'уход за кожей, косметика, ингредиенты косметики, уход за волосами, макияж, beauty гайды', robots: 'index, follow' };
   if (path === '/articles') return { title: 'Все статьи о красоте и уходе | BeautyGuide', description: 'Статьи BeautyGuide об уходе за кожей и волосами, косметике, макияже, маникюре, ингредиентах и процедурах.', robots: 'index, follow' };
   if (/^\/ingredients\/page\/(?:[2-9]|[1-9]\d+)$/.test(path)) { const page = Number(path.split('/').pop()); return {title: `Ингредиенты косметики — страница ${page} | BeautyGuide`, description: `Алфавитный каталог ингредиентов косметики, страница ${page}: свойства, применение и совместимость компонентов. Откройте карточки ингредиентов.`, robots:'index, follow'}; }
